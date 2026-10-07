@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ai-bot-python-fastapi.iml" filepath="$PROJECT_DIR$/.idea/ai-bot-python-fastapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/test-chat-python-fastapi.iml" filepath="$PROJECT_DIR$/.idea/test-chat-python-fastapi.iml" />
     </modules>
   </component>
 </project>
