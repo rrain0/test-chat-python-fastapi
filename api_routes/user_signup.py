@@ -1,28 +1,46 @@
 from fastapi import Depends, status, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from sqlmodel import Session
 from db_connection.db_connection import get_session
 from api_model.api_error import ApiError
 from api_model.api_user import db_user_to_api_user, ApiUser
-from api_model.api_user_create import ApiUserCreate
 from db_model.db_user import DbUser
 from db_repo.user_repo import user_by_login
 from services.jwt_service import create_access_token
 from services.pwd_hash_service import hash_password
 from utils import datetimes
+from pydantic import BaseModel, model_validator
+from utils.validators import validate_user_signup_login, validate_user_signup_password
 
-router = APIRouter(prefix="/user", tags=["User"])
 
 
-# Эндпоинт регистрации пользователя
-@router.post("/signup")
-def user_signup(user_create: ApiUserCreate, session: Session = Depends(get_session)):
+user_signup_router = APIRouter(prefix="/user/signup")
+
+
+
+class ApiUserSignup(BaseModel):
+    login: str
+    pwd: str
+
+    @model_validator(mode="after")
+    def validate_after(self) -> "ApiUserSignup":
+        validate_user_signup_login(self.login)
+        validate_user_signup_password(self.pwd)
+        return self
+
+class ApiUserSignedUp(BaseModel):
+    access_token: str
+    user: ApiUser
+
+
+
+@user_signup_router.post("", status_code=status.HTTP_201_CREATED, response_model=ApiUserSignedUp)
+def user_signup_route_handler(api_user_signup: ApiUserSignup, session: Session = Depends(get_session)):
 
     # Проверяем, нет ли уже пользователя с таким логином
-    existing_user_db = user_by_login(session, user_create.login)
-    if existing_user_db:
+    db_user = user_by_login(session, api_user_signup.login)
+    if db_user:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=jsonable_encoder(
@@ -34,11 +52,11 @@ def user_signup(user_create: ApiUserCreate, session: Session = Depends(get_sessi
         )
 
     # Хэшируем пароль
-    hashed_pwd = hash_password(user_create.pwd)
+    hashed_pwd = hash_password(api_user_signup.pwd)
 
     # Создаем модель для БД (UUID сгенерируется автоматически через default_factory)
     db_user = DbUser(
-        login=user_create.login,
+        login=api_user_signup.login,
         pwd_hash=hashed_pwd
     )
 
@@ -54,18 +72,8 @@ def user_signup(user_create: ApiUserCreate, session: Session = Depends(get_sessi
         created_at=datetimes.now()
     )
 
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content=jsonable_encoder(
-            UserSignup(
-                access_token=access_token,
-                user=db_user_to_api_user(db_user)
-            )
-        )
+    return ApiUserSignedUp(
+        access_token=access_token,
+        user=db_user_to_api_user(db_user)
     )
 
-
-
-class UserSignup(BaseModel):
-    access_token: str
-    user: ApiUser

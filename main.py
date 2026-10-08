@@ -5,9 +5,10 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from api_model.api_error import ApiError
-from db_connection import init_db
+from db_connection.db_connection import init_db
 
-from api_routes.user_routes import router as user_router
+from api_routes.user_signup import user_signup_router
+from api_routes.user_login import user_login_router
 
 
 # Создаем lifespan-функцию, которая выполнится строго при старте приложения
@@ -22,7 +23,8 @@ async def lifespan(app: FastAPI):
 # Create the FastAPI instance
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(user_router)
+app.include_router(user_signup_router)
+app.include_router(user_login_router)
 
 
 
