@@ -7,7 +7,7 @@ DATABASE_URL = "postgresql://backend_db_user:backend_db_user_pwd@localhost:5432/
 # Create the SQLAlchemy/SQLModel engine
 engine = create_engine(DATABASE_URL, echo=True)
 
-from model_db.UserDb import UserDb
+from db_model.db_user import DbUser
 
 # Функция, которую мы вызовем в lifespan
 def init_db():

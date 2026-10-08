@@ -1,7 +1,7 @@
 import uuid
 from sqlmodel import Field, SQLModel, String
 
-class UserDb(SQLModel, table=True):
+class DbUser(SQLModel, table=True):
     __tablename__ = "users"
     id: uuid.UUID = Field(
         nullable=False,
