@@ -9,6 +9,7 @@ from db_connection.db_connection import init_db
 
 from api_routes.user_signup import user_signup_router
 from api_routes.user_login import user_login_router
+from api_routes.user_current import user_current_router
 
 
 # Создаем lifespan-функцию, которая выполнится строго при старте приложения
@@ -25,6 +26,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(user_signup_router)
 app.include_router(user_login_router)
+app.include_router(user_current_router)
 
 
 
