@@ -1,6 +1,8 @@
 import uuid
 from sqlmodel import Field, SQLModel, String
 
+
+
 class DbUser(SQLModel, table=True):
     __tablename__ = "users"
     id: uuid.UUID = Field(

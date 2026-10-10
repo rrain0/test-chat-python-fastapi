@@ -8,7 +8,7 @@ from db_connection.db_connection import get_session
 from api_model.api_error import ApiError
 from api_model.api_user import db_user_to_api_user, ApiUser
 from db_repo.user_repo import user_by_login
-from services.jwt_service import create_access_token
+from services.jwt_user_service import create_user_access_token
 from services.pwd_hash_service import verify_password
 from utils import datetimes
 
@@ -41,7 +41,7 @@ def user_login_route_handler(api_user_login: ApiUserLogin, session: Session = De
     if not pwd_is_valid:
         return no_user()
 
-    access_token = create_access_token(
+    access_token = create_user_access_token(
         user_id=db_user.id,
         created_at=datetimes.now()
     )
