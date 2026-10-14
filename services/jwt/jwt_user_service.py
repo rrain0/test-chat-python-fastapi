@@ -1,21 +1,15 @@
 import datetime
 import uuid
 import jwt
-from pydantic import BaseModel
 
 from env import USER_ACCESS_TOKEN_LIFETIME, USER_ACCESS_TOKEN_SECRET
+from services.jwt.user_access_token import UserAccessToken
+from services.jwt.user_for_access_token import UserForAccessToken
 from utils.datetimes import parse_duration, now
 
 
-
-class UserAccessToken(BaseModel):
-    user_id: uuid.UUID
-    expires_at: datetime.datetime
-
-
-
 def create_user_access_token(
-        user_id: uuid.UUID,
+        user: UserForAccessToken,
         created_at: datetime.datetime,
 ) -> str:
     lifetime = datetime.timedelta(milliseconds=parse_duration(USER_ACCESS_TOKEN_LIFETIME))
@@ -24,12 +18,13 @@ def create_user_access_token(
     data = {
         "type": "user",
         "exp": int(expires_at.timestamp()),
-        "sub": str(user_id),
+        "sub": str(user.id),
+        "login": user.login,
     }
 
     token = jwt.encode(
-        data,
-        USER_ACCESS_TOKEN_SECRET,
+        payload=data,
+        key=USER_ACCESS_TOKEN_SECRET,
         algorithm='HS256'
     )
 
@@ -38,7 +33,11 @@ def create_user_access_token(
 
 
 def decode_user_access_token(token: str) -> UserAccessToken:
-    payload = jwt.decode(token, USER_ACCESS_TOKEN_SECRET, algorithms=['HS256'])
+    payload = jwt.decode(
+        jwt=token,
+        key=USER_ACCESS_TOKEN_SECRET,
+        algorithms=['HS256']
+    )
 
     type = payload['type']
     if type != 'user':
@@ -50,12 +49,16 @@ def decode_user_access_token(token: str) -> UserAccessToken:
         raise jwt.InvalidTokenError
     expires_at = datetime.datetime.fromtimestamp(expires_at_ts)
 
-    id_str = payload['sub']
-    if not id_str:
+    user_id_str = payload['sub']
+    if not user_id_str:
         raise jwt.InvalidTokenError
-    id_uuid = uuid.UUID(id_str)
+    user_id = uuid.UUID(user_id_str)
+
+    user_login = payload['login']
+    if not isinstance(user_login, str):
+        raise jwt.InvalidTokenError
 
     return UserAccessToken(
-        user_id=id_uuid,
+        user=UserForAccessToken(id=user_id, login=user_login),
         expires_at=expires_at,
     )

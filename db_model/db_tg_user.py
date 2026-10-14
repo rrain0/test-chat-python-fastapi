@@ -1,8 +1,13 @@
 from sqlmodel import Field, SQLModel, String, BigInteger
 
+from db_model.db_user import DbUserIdFk
 
 
-class DbTgUser(SQLModel, table=True):
+class DbTgUser(
+    DbUserIdFk,
+    SQLModel,
+    table=True,
+):
     __tablename__ = "tg_users"
     id: int = Field(
         nullable=False,

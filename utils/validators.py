@@ -9,7 +9,7 @@ def validate_user_signup_login(login: str):
 
 
 
-def validate_user_signup_password(pwd: str):
+def validate_user_signup_pwd(pwd: str):
     # Проверяем длину пароля (от 8 до 100 символов)
     if not (8 <= len(pwd) <= 100):
         raise ValueError("Password length must be in range 8..100")

@@ -6,10 +6,12 @@ from sqlmodel import Session
 
 from db_connection.db_connection import get_session
 from api_model.api_error import ApiError
-from api_model.api_user import db_user_to_api_user, ApiUser
-from db_repo.user_repo import user_by_login
-from services.jwt_user_service import create_user_access_token
-from services.pwd_hash_service import verify_password
+from api_model.api_user import ApiUser
+from api_model.api_user_from_db_user import api_user_from_db_user
+from db_repo.user_repo import db_get_user_by_login
+from services.jwt.jwt_user_service import create_user_access_token
+from services.jwt.user_for_access_token import UserForAccessToken
+from services.pwd_hash_service import verify_pwd
 from utils import datetimes
 
 
@@ -29,26 +31,26 @@ class ApiUserLoggedIn(BaseModel):
 
 
 @user_login_router.post("", status_code=status.HTTP_200_OK, response_model=ApiUserLoggedIn)
-def user_login_route_handler(api_user_login: ApiUserLogin, session: Session = Depends(get_session)):
+def user_login_post_route_handler(api_user_login: ApiUserLogin, session: Session = Depends(get_session)):
 
-    db_user = user_by_login(session, api_user_login.login)
+    db_user = db_get_user_by_login(session, api_user_login.login)
 
     if not db_user:
         return no_user()
 
-    pwd_is_valid = verify_password(api_user_login.pwd, db_user.pwd_hash)
+    pwd_is_valid = verify_pwd(api_user_login.pwd, db_user.pwd_hash)
 
     if not pwd_is_valid:
         return no_user()
 
     access_token = create_user_access_token(
-        user_id=db_user.id,
+        user=UserForAccessToken(id=db_user.id, login=db_user.login),
         created_at=datetimes.now()
     )
 
     return ApiUserLoggedIn(
         access_token=access_token,
-        user=db_user_to_api_user(db_user)
+        user=api_user_from_db_user(db_user)
     )
 
 
