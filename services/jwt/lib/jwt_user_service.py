@@ -3,8 +3,8 @@ import uuid
 import jwt
 
 from env import USER_ACCESS_TOKEN_LIFETIME, USER_ACCESS_TOKEN_SECRET
-from services.jwt.user_access_token import UserAccessToken
-from services.jwt.user_for_access_token import UserForAccessToken
+from services.jwt.model.user_access_token import UserAccessToken
+from services.jwt.model.user_for_access_token import UserForAccessToken
 from utils.datetimes import parse_duration, now
 
 

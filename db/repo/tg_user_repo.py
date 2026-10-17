@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import insert
 from sqlmodel import Session, select
 
-from db_model.db_tg_user import DbTgUser
+from db.model.db_tg_user import DbTgUser
 
 
 

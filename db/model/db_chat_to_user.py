@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel
 
-from db_model.db_chat import DbChatIdPkFk
-from db_model.db_user import DbUserIdPkFk
+from db.model.db_chat import DbChatIdPkFk
+from db.model.db_user import DbUserIdPkFk
 
 
 class DbChatToUser(

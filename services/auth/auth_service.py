@@ -3,13 +3,13 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pygments.lexers import q
 from sqlmodel import Session
 
-from db_connection.db_connection import get_session
-from db_model.db_tg_user import DbTgUser
-from db_model.db_user import DbUser
-from db_repo.tg_user_repo import db_upsert_tg_user, db_get_tg_user_by_id
-from db_repo.user_repo import db_get_user_by_id
-from services.jwt.jwt_tg_user_service import decode_tg_user_access_token
-from services.jwt.jwt_user_service import decode_user_access_token
+from db.connection.db_connection import get_session
+from db.model.db_tg_user import DbTgUser
+from db.model.db_user import DbUser
+from db.repo.tg_user_repo import db_upsert_tg_user, db_get_tg_user_by_id
+from db.repo.user_repo import db_get_user_by_id
+from services.jwt.lib.jwt_tg_user_service import decode_tg_user_access_token
+from services.jwt.lib.jwt_user_service import decode_user_access_token
 
 
 

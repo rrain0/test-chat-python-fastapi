@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class ApiTgUser(BaseModel):
+class BackApiTgUser(BaseModel):
     id: int
     username: str | None
     first_name: str

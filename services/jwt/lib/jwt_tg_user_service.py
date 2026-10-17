@@ -4,9 +4,9 @@ import uuid
 import jwt
 
 from env import TG_USER_ACCESS_TOKEN_LIFETIME, TG_USER_ACCESS_TOKEN_SECRET
-from services.jwt.tg_user_access_token import TgUserAccessToken
-from services.jwt.tg_user_for_access_token import TgUserForAccessToken
-from services.jwt.user_for_access_token import UserForAccessToken
+from services.jwt.model.tg_user_access_token import TgUserAccessToken
+from services.jwt.model.tg_user_for_access_token import TgUserForAccessToken
+from services.jwt.model.user_for_access_token import UserForAccessToken
 from utils.datetimes import parse_duration, now
 
 

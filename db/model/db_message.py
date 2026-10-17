@@ -2,7 +2,7 @@ import datetime
 import uuid
 from sqlmodel import Field, SQLModel, String
 
-from db_model.db_chat import DbChatIdFk
+from db.model.db_chat import DbChatIdFk
 
 
 

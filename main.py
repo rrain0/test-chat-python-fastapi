@@ -4,14 +4,14 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from api_model.api_error import ApiError
-from api_routes.tg_user_login_post import tg_user_login_router
-from db_connection.db_connection import init_db
+from backend_api_model.back_api_error import BackApiError
+from api.routes.tg_user_login_post import tg_user_login_router
+from db.connection.db_connection import init_db
 
-from api_routes.user_signup_post import user_signup_router
-from api_routes.user_login_post import user_login_router
-from api_routes.user_current_get import user_current_router
-from api_routes.tg_user_message_post import tg_user_message_router
+from api.routes.user_signup_post import user_signup_router
+from api.routes.user_login_post import user_login_router
+from api.routes.user_current_get import user_current_router
+from api.routes.tg_user_message_post import tg_user_message_router
 
 
 # Создаем lifespan-функцию, которая выполнится строго при старте приложения
@@ -41,7 +41,7 @@ async def request_validation_exception_handler(request: Request, exc: RequestVal
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content=jsonable_encoder(
-            ApiError(
+            BackApiError(
                 error_code="DATA_FORMAT_ERROR",
                 msg="Неправильный формат входных данных",
                 detail=errors,

@@ -1,9 +1,9 @@
 from fastapi import Depends, status, APIRouter
 from sqlmodel import Session
 
-from db_connection.db_connection import get_session
-from db_model.db_tg_user import DbTgUser
-from services.auth_service import get_current_tg_user
+from db.connection.db_connection import get_session
+from db.model.db_tg_user import DbTgUser
+from services.auth.auth_service import get_current_tg_user
 
 tg_user_message_router = APIRouter(prefix="/tg_user/message")
 

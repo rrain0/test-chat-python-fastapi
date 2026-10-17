@@ -1,7 +1,7 @@
 import uuid
 
 from sqlmodel import Session, select
-from db_model.db_user import DbUser
+from db.model.db_user import DbUser
 
 
 

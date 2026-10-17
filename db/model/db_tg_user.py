@@ -1,6 +1,6 @@
 from sqlmodel import Field, SQLModel, String, BigInteger
 
-from db_model.db_user import DbUserIdFk
+from db.model.db_user import DbUserIdFk
 
 
 class DbTgUser(

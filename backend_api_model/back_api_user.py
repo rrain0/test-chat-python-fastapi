@@ -2,9 +2,7 @@ import uuid
 from pydantic import BaseModel
 
 
-class ApiUser(BaseModel):
+class BackApiUser(BaseModel):
     id: uuid.UUID
     login: str
-
-
 
