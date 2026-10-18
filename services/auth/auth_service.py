@@ -4,7 +4,6 @@ from pygments.lexers import q
 from sqlmodel import Session
 
 from db.connection.db_connection import get_session
-from db.model.db_tg_user import DbTgUser
 from db.model.db_user import DbUser
 from db.repo.tg_user_repo import db_upsert_tg_user, db_get_tg_user_by_id
 from db.repo.user_repo import db_get_user_by_id
@@ -35,7 +34,8 @@ def get_current_user(
     # credentials.credentials вернет сам токен (строку)
     user_token_str = credentials.credentials
     # Decode token
-    user_token = decode_user_access_token(user_token_str)
+    try: user_token = decode_user_access_token(user_token_str)
+    except: raise credentials_exception()
     # Query the user from Postgres using SQLModel
     db_user = db_get_user_by_id(session, user_token.user.id)
     if not db_user:
@@ -43,35 +43,25 @@ def get_current_user(
     return db_user
 
 
+
 def get_current_user_by_tg_user(
         credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
         session: Session = Depends(get_session)
 ) -> DbUser:
     tg_user_token_str = credentials.credentials
-    tg_user_token = decode_tg_user_access_token(tg_user_token_str)
 
-    tg_user = db_get_tg_user_by_id(session, tg_user_token.user_id)
-    if not tg_user:
+    try: tg_user_token = decode_tg_user_access_token(tg_user_token_str)
+    except: raise credentials_exception()
+
+    db_tg_user = db_get_tg_user_by_id(session, tg_user_token.tg_user.id)
+    if not db_tg_user:
         raise credentials_exception()
 
-    db_user = db_get_user_by_id(session, tg_user.user_id)
-    assert db_user is not None
+    db_user = db_get_user_by_id(session, tg_user_token.user.id)
+    if not db_user:
+        raise credentials_exception()
+
+    if db_user.id != db_tg_user.user_id:
+        raise credentials_exception()
 
     return db_user
-
-
-def get_current_tg_user(
-        credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-        session: Session = Depends(get_session)
-) -> DbTgUser:
-    tg_token_str = credentials.credentials
-    tg_token = decode_tg_user_access_token(tg_token_str)
-    db_tg_user = DbTgUser(
-        id=tg_token.user_id,
-        username=tg_token.user_username,
-        first_name=tg_token.user_first_name,
-        last_name=tg_token.user_last_name,
-    )
-    db_upsert_tg_user(session, db_tg_user)
-    return db_tg_user
-
