@@ -8,7 +8,7 @@ from backend_api_model.back_api_user_to_signup import BackApiUserToSignup
 from db.connection.db_connection import get_session
 from backend_api_model.back_api_error import BackApiError
 from api.convert.back_api_user_from_db_user import back_api_user_from_db_user
-from db.model.db_user import DbUser
+from db.tables.db_user import DbUser
 from db.repo.user_repo import db_get_user_by_login
 from services.jwt.lib.jwt_user_service import create_user_access_token
 from services.jwt.model.user_for_access_token import UserForAccessToken
@@ -61,7 +61,6 @@ def user_signup_post_route_handler(
     # Сохраняем в PostgreSQL
     session.add(db_user)
     session.commit()
-
     # Обновляем текущий объект реальными данными из PostgreSQL
     session.refresh(db_user)
 

@@ -4,6 +4,13 @@ from sqlmodel import create_engine, Session, SQLModel
 # Format: postgresql://user:password@localhost:port/database_name
 DATABASE_URL = "postgresql://backend_db_user:backend_db_user_pwd@localhost:5432/test_chat_python_fastapi_db"
 
+# Import all physical tables to create them in specified order
+from db.tables.db_user import DbUser
+from db.tables.db_tg_user import DbTgUser
+from db.tables.db_chat import DbChat
+from db.tables.db_chat_to_user import DbChatToUser
+from db.tables.db_msg import DbMsg
+
 # Create the SQLAlchemy/SQLModel engine
 engine = create_engine(DATABASE_URL, echo=True)
 

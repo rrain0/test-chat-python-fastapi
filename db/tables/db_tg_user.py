@@ -1,19 +1,20 @@
+import uuid
+
 from sqlmodel import Field, SQLModel, String, BigInteger
 
-from db.model.db_user import DbUserIdFk
 
-
-class DbTgUser(
-    DbUserIdFk,
-    SQLModel,
-    table=True,
-):
+class DbTgUser(SQLModel, table=True):
     __tablename__ = "tg_users"
     id: int = Field(
         nullable=False,
         sa_type=BigInteger,
         primary_key=True,
         index=True,
+    )
+    user_id: uuid.UUID = Field(
+        nullable=False,
+        index=True,
+        foreign_key="users.id",
     )
     username: str | None = Field(
         nullable=True,

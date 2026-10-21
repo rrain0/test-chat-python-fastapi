@@ -2,7 +2,7 @@ from fastapi import Depends, status, APIRouter
 
 from backend_api_model.back_api_user import BackApiUser
 from api.convert.back_api_user_from_db_user import back_api_user_from_db_user
-from db.model.db_user import DbUser
+from db.tables.db_user import DbUser
 from services.auth.auth_service import get_current_user
 
 

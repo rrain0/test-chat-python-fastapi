@@ -11,7 +11,7 @@ from db.connection.db_connection import init_db
 from api.routes.user_signup_post import user_signup_router
 from api.routes.user_login_post import user_login_router
 from api.routes.user_current_get import user_current_router
-from api.routes.tg_user_message_post import tg_user_message_router
+from api.routes.tg_user_msg_post import tg_user_msg_router
 
 
 # Создаем lifespan-функцию, которая выполнится строго при старте приложения
@@ -30,7 +30,7 @@ app.include_router(user_signup_router)
 app.include_router(user_login_router)
 app.include_router(tg_user_login_router)
 app.include_router(user_current_router)
-app.include_router(tg_user_message_router)
+app.include_router(tg_user_msg_router)
 
 
 
