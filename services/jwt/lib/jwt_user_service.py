@@ -2,17 +2,17 @@ import datetime
 import uuid
 import jwt
 
-from env import USER_ACCESS_TOKEN_LIFETIME, USER_ACCESS_TOKEN_SECRET
+from services.env.env import USER_ACCESS_TOKEN_SECRET, USER_ACCESS_TOKEN_LIFETIME
 from services.jwt.model.user_access_token import UserAccessToken
 from services.jwt.model.user_for_access_token import UserForAccessToken
-from utils.datetimes import parse_duration, now
+from utils.datetimes import now
 
 
 def create_user_access_token(
         user: UserForAccessToken,
         created_at: datetime.datetime,
 ) -> str:
-    lifetime = datetime.timedelta(milliseconds=parse_duration(USER_ACCESS_TOKEN_LIFETIME))
+    lifetime = USER_ACCESS_TOKEN_LIFETIME
     expires_at = created_at + lifetime
 
     data = {

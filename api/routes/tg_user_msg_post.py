@@ -2,7 +2,7 @@ from fastapi import Depends, status, APIRouter
 from pydantic import BaseModel
 from sqlmodel import Session
 
-from db.connection.db_connection import get_session
+from db.setup.db_setup import get_session
 from db.tables.db_msg import DbMsg
 from db.tables.db_user import DbUser
 from db.repo.chat_repo import upsert_chat_of_single_user

@@ -5,7 +5,7 @@ from sqlmodel import Session
 
 from backend_api_model.back_api_user_logged_in import BackApiUserLoggedIn
 from backend_api_model.back_api_user_to_login import BackApiUserToLogin
-from db.connection.db_connection import get_session
+from db.setup.db_setup import get_session
 from backend_api_model.back_api_error import BackApiError
 from api.convert.back_api_user_from_db_user import back_api_user_from_db_user
 from db.repo.user_repo import db_get_user_by_login

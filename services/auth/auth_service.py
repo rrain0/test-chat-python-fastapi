@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pygments.lexers import q
 from sqlmodel import Session
 
-from db.connection.db_connection import get_session
+from db.setup.db_setup import get_session
 from db.tables.db_user import DbUser
 from db.repo.tg_user_repo import db_upsert_tg_user, db_get_tg_user_by_id
 from db.repo.user_repo import db_get_user_by_id
