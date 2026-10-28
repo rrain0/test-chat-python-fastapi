@@ -1,8 +1,6 @@
 
-
-
 # Set ENV_FILE variable if it wasn't set already (for example, through shell)
-ENV_FILE ?= ./deploy-dev/test-chat.python-fastapi.dev.env
+ENV_FILE ?= ./deploy-dev/.env.dev
 
 # Load env vars from file to shell
 ifneq (,$(wildcard $(ENV_FILE)))
