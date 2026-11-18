@@ -7,7 +7,7 @@ from modules.session.web.convert.pg_web_session_to_rd_web_session import pg_web_
 from modules.session.web.jwt_access.create_web_access_token import create_web_access_token
 from modules.session.web.jwt_refresh.create_web_refresh_token import create_web_refresh_token
 from modules.session.web.postgres.web_session import PgWebSession
-from modules.session.web.redis.repo_web_session import rd_set_web_session
+from modules.session.web.redis.repo_current_web_session import rd_set_current_web_session
 from shared.utils.datetimes.now import now
 
 
@@ -58,7 +58,7 @@ async def commit_create_web_session(
     await postgres.commit()
 
     rd_session = pg_web_session_to_rd_web_session(pg_session)
-    await rd_set_web_session(
+    await rd_set_current_web_session(
         web_session=rd_session,
         redis=redis,
     )

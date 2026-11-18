@@ -3,17 +3,13 @@ from uuid import UUID
 
 from redis_fastapi.deps import AsyncClient
 
-from core.config.env import WEB_REFRESH_TOKEN_GRACE_PERIOD, REDIS_PREFIX
+from core.config.env import WEB_REFRESH_TOKEN_GRACE_PERIOD
+from modules.session.web.redis.repo_web_session import rd_get_user_web_session_key
 from modules.session.web.redis.web_session import RdWebSessionByToken
 
 
 def rd_get_grace_user_web_session_key(user_id: UUID, session_id: UUID):
-    return (
-        f'{REDIS_PREFIX}:session:web'
-        f':user_id:{str(user_id)}'
-        f':session_id:{str(session_id)}'
-        f':grace'
-    )
+    return f'{rd_get_user_web_session_key(user_id, session_id)}:grace'
 
 
 async def rd_get_grace_web_session(

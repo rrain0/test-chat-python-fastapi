@@ -6,7 +6,7 @@ from fastapi import Response, Request
 def get_web_refresh_token(
         request: Request,
 ):
-    refresh_token_str = request.cookies['WebRefreshToken']
+    refresh_token_str = request.cookies.get('WebRefreshToken', '')
     if not refresh_token_str:
         return None
     if not refresh_token_str.startswith('web_'):

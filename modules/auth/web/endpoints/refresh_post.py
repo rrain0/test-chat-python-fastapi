@@ -2,7 +2,7 @@ from fastapi import status, APIRouter, Request, Response
 from redis_fastapi import AsyncRedisDep
 
 from core.postgres.init import AsyncPostgresDep
-from modules.session.unauthorized_error import unauthorized_error
+from modules.session.unauthorized_error import unauthorized_error, unauthorized_exception
 from modules.session.web.repo.refresh_web_session import commit_refresh_web_session
 from modules.session.web.token_store.refresh_token import get_web_refresh_token, add_web_refresh_token
 from shared.backend.modules.user.api_model.auth_web_refreshed import BackApiAuthWebRefreshed
@@ -32,7 +32,7 @@ async def auth_web_refresh_post(
 ):
     refresh_token_str = get_web_refresh_token(request)
     if not refresh_token_str:
-        raise unauthorized_error()
+        raise unauthorized_exception()
 
     new_access_token_str, new_access_token, new_refresh_token_str, new_refresh_token = \
         await commit_refresh_web_session(
