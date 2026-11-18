@@ -3,12 +3,11 @@ import uuid
 
 import jwt
 
-from services.env.env import TG_USER_ACCESS_TOKEN_SECRET, TG_USER_ACCESS_TOKEN_LIFETIME
+from core.config.env import TG_BOT_ACCESS_TOKEN_SECRET, TG_BOT_ACCESS_TOKEN_LIFETIME
 from services.jwt.model.tg_user_access_token import TgUserAccessToken
 from services.jwt.model.tg_user_for_access_token import TgUserForAccessToken
 from services.jwt.model.user_for_access_token import UserForAccessToken
-from utils.datetimes import now
-
+from shared.utils.datetimes.now import now
 
 
 def create_tg_user_access_token(
@@ -16,23 +15,23 @@ def create_tg_user_access_token(
         tg_user: TgUserForAccessToken,
         created_at: datetime.datetime,
 ) -> str:
-    lifetime = TG_USER_ACCESS_TOKEN_LIFETIME
+    lifetime = TG_BOT_ACCESS_TOKEN_LIFETIME
     expires_at = created_at + lifetime
 
     data = {
-        "type": "tg_user",
-        "exp": int(expires_at.timestamp()),
-        "sub": str(tg_user.id),
-        "tg_user_username": tg_user.username,
-        "tg_user_first_name": tg_user.first_name,
-        "tg_user_last_name": tg_user.last_name,
-        "user_id": str(user.id),
-        "user_login": user.login,
+        'type': 'tg_user',
+        'exp': int(expires_at.timestamp()),
+        'sub': str(tg_user.id),
+        'tg_user_username': tg_user.username,
+        'tg_user_first_name': tg_user.first_name,
+        'tg_user_last_name': tg_user.last_name,
+        'user_id': str(user.id),
+        'user_login': user.username,
     }
 
     token = jwt.encode(
         payload=data,
-        key=TG_USER_ACCESS_TOKEN_SECRET,
+        key=TG_BOT_ACCESS_TOKEN_SECRET,
         algorithm='HS256'
     )
 
@@ -43,7 +42,7 @@ def create_tg_user_access_token(
 def decode_tg_user_access_token(token: str) -> TgUserAccessToken:
     payload = jwt.decode(
         jwt=token,
-        key=TG_USER_ACCESS_TOKEN_SECRET,
+        key=TG_BOT_ACCESS_TOKEN_SECRET,
         algorithms=['HS256']
     )
 
@@ -80,7 +79,7 @@ def decode_tg_user_access_token(token: str) -> TgUserAccessToken:
     return TgUserAccessToken(
         user=UserForAccessToken(
             id=user_id,
-            login=user_login
+            username=user_login
         ),
         tg_user=TgUserForAccessToken(
             id=tg_user_id,

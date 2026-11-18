@@ -1,15 +1,20 @@
 [project]
 name = "test-chat-python-fastapi"
 version = "0.1.0"
-requires-python = ">=3.13"
+requires-python = "==3.14.8"
 dependencies = [
     "bcrypt==5.0.0",
     "fastapi-redis-sdk==0.9.1",
     "fastapi[standard]==0.161.1",
+    "greenlet==3.5.6",
     "psycopg==3.3.6",
     "psycopg-binary==3.3.6",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
     "pyjwt[crypto]==2.15.1",
+    "sqlalchemy==2.1.6",
     "sqlmodel==0.0.48",
+    "user-agents==2.2.0",
 ]
 [tool.uv]
 add-bounds = "exact"
