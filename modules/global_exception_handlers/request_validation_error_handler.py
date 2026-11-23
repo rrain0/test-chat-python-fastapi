@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import Request, status, FastAPI
 from fastapi.exceptions import RequestValidationError
 
-from shared.utils.fastapis.api_error.api_error_case import ApiErrorCase
+from shared.utils.fastapis.api_error_case import ApiErrorCase
 
 
 

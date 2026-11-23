@@ -19,8 +19,8 @@ from services.jwt.model.user_for_access_token import UserForAccessToken
 from modules.pwd_hash.pwd_hash import hash_pwd
 from shared.utils.datetimes.now import now
 from pydantic import model_validator
-from validators.user_to_signup_pwd import validate_user_to_signup_pwd
-from validators.user_to_signup_username import validate_user_to_signup_username
+from shared.backend.modules.validators.user_to_signup_pwd import validate_user_to_signup_pwd
+from shared.backend.modules.validators.user_to_signup_username import validate_user_to_signup_username
 
 router_tg_user_signup = APIRouter(prefix='/api/tg_user/signup')
 

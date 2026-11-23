@@ -1,6 +1,6 @@
 from fastapi import status
 
-from shared.utils.fastapis.api_error.api_error_case import ApiErrorCase
+from shared.utils.fastapis.api_error_case import ApiErrorCase
 
 
 unauthorized_error = ApiErrorCase(

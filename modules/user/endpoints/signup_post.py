@@ -16,11 +16,11 @@ from modules.user.postgres.user import PgUser
 from modules.pwd_hash.pwd_hash import hash_pwd
 from pydantic import field_validator
 
-from shared.utils.fastapis.api_error.api_error_case import ApiErrorCase
+from shared.utils.fastapis.api_error_case import ApiErrorCase
 from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
-from validators.user_to_signup_pwd import validate_user_to_signup_pwd
-from validators.user_to_signup_username import validate_user_to_signup_username
+from shared.backend.modules.validators.user_to_signup_pwd import validate_user_to_signup_pwd
+from shared.backend.modules.validators.user_to_signup_username import validate_user_to_signup_username
 
 
 router_user_signup = APIRouter(prefix='/api/user/signup')

@@ -1,6 +1,6 @@
 from fastapi import Request, FastAPI
 
-from shared.utils.fastapis.api_error.api_error_case import ApiErrorCaseException
+from shared.utils.fastapis.api_error_case import ApiErrorCaseException
 
 
 async def api_error_case_exception_handler(

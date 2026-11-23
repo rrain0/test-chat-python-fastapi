@@ -9,7 +9,7 @@ from modules.user.convert.db_user_to_back_api_user import db_user_to_back_api_us
 from modules.session.web.token_store.refresh_token import add_web_refresh_token
 from modules.user.postgres.get_user_by_username import pg_get_user_by_username
 from modules.pwd_hash.pwd_hash import verify_pwd
-from shared.utils.fastapis.api_error.api_error_case import ApiErrorCase
+from shared.utils.fastapis.api_error_case import ApiErrorCase
 from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
 from redis_fastapi import AsyncRedisDep

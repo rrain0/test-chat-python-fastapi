@@ -4,7 +4,7 @@ from core.postgres.init import AsyncPostgresDep
 from modules.user.postgres.get_user_by_id import pg_get_user_by_id
 from modules.session.app.provider.provide_app_session import ProvideAppSessionDep
 from shared.backend.modules.user.api_model.user import BackApiUser
-from shared.utils.fastapis.api_error.api_error_case import ApiErrorCase
+from shared.utils.fastapis.api_error_case import ApiErrorCase
 
 
 router_user_current = APIRouter(prefix='/api/user/current')
