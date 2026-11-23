@@ -2,13 +2,13 @@ from fastapi import Depends, status, APIRouter
 from pydantic import BaseModel
 
 from core.postgres.init import AsyncPostgresDep
-from modules.msg.db_tables.msg import DbMsg
+from modules.msg.postgres.msg import DbMsg
 from modules.user.postgres.user import PgUser
 from modules.chat.db_repo.upsert_chat_of_single_user import upsert_chat_of_single_user
 from services.auth.auth_service import get_current_user_by_tg_user
 from shared.utils.datetimes.now import now
 
-router_tg_user_msg = APIRouter(prefix='/api/tg_user/msg')
+router_tg_user_msg = APIRouter(prefix="/api/tg_user/msg")
 
 
 

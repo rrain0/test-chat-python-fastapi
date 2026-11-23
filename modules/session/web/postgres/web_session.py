@@ -5,7 +5,7 @@ from sqlmodel import Field, SQLModel, String
 
 
 class PgWebSession(SQLModel, table=True):
-    __tablename__ = 'web_sessions'
+    __tablename__ = "web_sessions"
     id: UUID = Field(
         nullable=False,
         primary_key=True,
@@ -33,7 +33,7 @@ class PgWebSession(SQLModel, table=True):
     user_id: UUID = Field(
         nullable=False,
         index=True,
-        foreign_key='users.id',
+        foreign_key="users.id",
     )
 
     last_active_at: datetime = Field(
@@ -44,7 +44,7 @@ class PgWebSession(SQLModel, table=True):
         sa_type=String(100),
     )
     # For web: user agent string
-    # For tg bot: 'Telegram Bot'
+    # For tg bot: "Telegram Bot"
     last_active_at_device: str | None = Field(
         nullable=True,
         sa_type=String(250),

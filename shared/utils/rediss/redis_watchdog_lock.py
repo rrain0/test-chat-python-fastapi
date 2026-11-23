@@ -32,7 +32,7 @@ async def redis_watchdog_lock(
     )
 
     if not await lock.acquire():
-        raise TimeoutError(f'Could not acquire lock "{key}" within {acquire_timeout} seconds')
+        raise TimeoutError(f"Could not acquire lock '{key}' within {acquire_timeout} seconds")
 
     async def _watchdog():
         try:
@@ -43,11 +43,11 @@ async def redis_watchdog_lock(
                     # Raises an error if lock expired or was lost
                     extended = await lock.extend(timeout, replace_ttl=True)
                     if not extended:
-                        raise RuntimeError('Failed to extend redis lock')
+                        raise RuntimeError("Failed to extend redis lock")
                 except Exception:
                     lock_lost.set()
                     if owner_task and not owner_task.done():
-                        owner_task.cancel('Redis lock expired or lost')
+                        owner_task.cancel("Redis lock expired or lost")
                     break
         except asyncio.CancelledError:
             pass
@@ -57,7 +57,7 @@ async def redis_watchdog_lock(
         yield lock
     except asyncio.CancelledError as ex:
         if lock_lost.is_set():
-            raise RedisLockLostError(f'Aborted: lock "{key}" was lost') from ex
+            raise RedisLockLostError(f"Aborted: lock '{key}' was lost") from ex
         raise
     finally:
         watchdog_task.cancel()

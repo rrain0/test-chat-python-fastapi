@@ -5,17 +5,16 @@ from sqlmodel import Field, SQLModel, String
 
 
 class DbMsg(SQLModel, table=True):
-    __tablename__ = 'msgs'
+    __tablename__ = "msgs"
     id: UUID = Field(
         nullable=False,
         primary_key=True,
         index=True,
-        default_factory=uuid7
     )
     chat_id: UUID = Field(
         nullable=False,
         index=True,
-        foreign_key='chats.id',
+        foreign_key="chats.id",
     )
     sent_at: datetime.datetime = Field()
     text_content: str = Field(

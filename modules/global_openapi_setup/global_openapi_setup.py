@@ -22,26 +22,26 @@ def global_openapi_setup(app: FastAPI):
     )
 
 
-    for path in openapi_schema['paths'].values():
+    for path in openapi_schema["paths"].values():
         for method in path.values():
-            responses = method.get('responses', { })
+            responses = method.get("responses", { })
 
             # Заменяем 422 Validation Error на 400 Bad Request во всех роутах схемы
-            if '422' in responses:
-                http422 = responses['422']
-                if http422['description'] == 'Validation Error':
-                    responses.pop('422')
+            if "422" in responses:
+                http422 = responses["422"]
+                if http422["description"] == "Validation Error":
+                    responses.pop("422")
                     validation_error_case = create_request_validation_api_error_case(
                         [
                             {
-                                'loc': [
-                                    'string',
+                                "loc": [
+                                    "string",
                                     0
                                 ],
-                                'msg': 'string',
-                                'type': 'string',
-                                'input': 'string',
-                                'ctx': {}
+                                "msg": "string",
+                                "type": "string",
+                                "input": "string",
+                                "ctx": {}
                             }
                         ]
                     )
@@ -53,12 +53,12 @@ def global_openapi_setup(app: FastAPI):
     for route_context in iter_route_contexts(app.routes):
         route = route_context.route  # Получаем сам объект APIRoute
 
-        if hasattr(route, 'dependant') and route.dependant:
+        if hasattr(route, "dependant") and route.dependant:
 
             # Собираем зависимости
             dependencies = [d.call for d in route.dependant.dependencies if d.call]
 
-            if hasattr(route, 'dependencies'):
+            if hasattr(route, "dependencies"):
                 dependencies.extend([d.dependency for d in route.dependencies if d.dependency])
 
             # Проверяем, привязана ли функция авторизации provide_app_session к эндпоинту
@@ -70,14 +70,14 @@ def global_openapi_setup(app: FastAPI):
                     path_format = route_context.path_format
 
                     # Проверяем, существует ли путь в схеме
-                    if path_format in openapi_schema['paths']:
-                        path_node = openapi_schema['paths'][path_format]
+                    if path_format in openapi_schema["paths"]:
+                        path_node = openapi_schema["paths"][path_format]
 
                         if method_lower in path_node:
-                            responses = path_node[method_lower].setdefault('responses', {})
+                            responses = path_node[method_lower].setdefault("responses", {})
 
                             # Если 401 статус еще не задокументирован для этого роута вручную, добавляем его
-                            if '401' not in responses:
+                            if "401" not in responses:
                                 unauthorized_error.add_example_to_openapi_responses(responses)
 
 

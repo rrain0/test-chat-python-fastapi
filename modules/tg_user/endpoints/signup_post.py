@@ -10,7 +10,7 @@ from services.jwt.lib.jwt_tg_user_service import create_tg_user_access_token
 from services.jwt.model.tg_user_for_access_token import TgUserForAccessToken
 from core.postgres.init import AsyncPostgresDep
 from shared.backend.modules.error.api_model.error import BackApiError
-from modules.user.convert.db_user_to_back_api_user import db_user_to_back_api_user
+from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
 from modules.tg_user.db_tables.tg_user import PgTgUser
 from modules.user.postgres.user import PgUser
 from modules.tg_user.db_repo.upsert_tg_user import pg_upsert_tg_user_by_id
@@ -22,12 +22,12 @@ from pydantic import model_validator
 from shared.backend.modules.validators.user_to_signup_pwd import validate_user_to_signup_pwd
 from shared.backend.modules.validators.user_to_signup_username import validate_user_to_signup_username
 
-router_tg_user_signup = APIRouter(prefix='/api/tg_user/signup')
+router_tg_user_signup = APIRouter(prefix="/api/tg_user/signup")
 
 
 class BackApiTgUserToSignupWithValidation(BackApiTgUserToSignup):
-    @model_validator(mode='after')
-    def validate_after(self) -> 'BackApiTgUserToSignupWithValidation':
+    @model_validator(mode="after")
+    def validate_after(self) -> "BackApiTgUserToSignupWithValidation":
         validate_user_to_signup_username(self.username)
         validate_user_to_signup_pwd(self.pwd)
         return self
@@ -47,8 +47,8 @@ async def tg_user_signup_post(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=jsonable_encoder(
                 BackApiError(
-                    error_code='USERNAME_EXISTS',
-                    error_msg='Пользователь с таким логином уже существует',
+                    error_code="USERNAME_EXISTS",
+                    error_msg="Пользователь с таким логином уже существует",
                 )
             )
         )
@@ -56,7 +56,6 @@ async def tg_user_signup_post(
     # Хэшируем пароль
     hashed_pwd = hash_pwd(user_to_signup.pwd)
 
-    # Создаем модель для БД (UUID сгенерируется автоматически через default_factory)
     db_user = PgUser(
         id=uuid7(),
         username=user_to_signup.username,
@@ -99,5 +98,5 @@ async def tg_user_signup_post(
 
     return BackApiUserLoggedIn(
         access_token=tg_user_access_token,
-        user=db_user_to_back_api_user(db_user)
+        user=pg_user_to_back_api_user(db_user)
     )

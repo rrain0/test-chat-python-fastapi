@@ -4,7 +4,7 @@ from sqlmodel import Field, SQLModel, String
 #TODO updated_at everywhere
 
 class PgUser(SQLModel, table=True):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id: UUID = Field(
         nullable=False,
         primary_key=True,

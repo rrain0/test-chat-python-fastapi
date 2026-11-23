@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from modules.chat.db_tables.chat import DbChat
-from modules.chat.db_tables.chat_to_user import DbChatToUser
+from modules.chat.postgres.chat import DbChat
+from modules.chat.postgres.chat_to_user import DbChatToUser
 
 
 def init_chat(app: FastAPI):

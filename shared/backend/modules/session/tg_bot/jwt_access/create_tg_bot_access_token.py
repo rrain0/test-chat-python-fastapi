@@ -4,20 +4,20 @@ from uuid import UUID
 import jwt
 
 from core.config.env import TG_BOT_ACCESS_TOKEN_LIFETIME, TG_BOT_ACCESS_TOKEN_SECRET
-from modules.session.tg_bot.jwt_access.tg_bot_access_token import TgBotAccessToken
+from shared.backend.modules.session.tg_bot.jwt_access.tg_bot_access_token import TgBotAccessToken
 
 
 def create_tg_bot_access_token(
         id: UUID,
         created_at: datetime,
-        tg_user_id: UUID,
+        tg_user_id: int,
         tg_user_username: str,
 ):
     lifetime = TG_BOT_ACCESS_TOKEN_LIFETIME
     expires_at = created_at + lifetime
 
     token = TgBotAccessToken(
-        type='TgBotAccessToken',
+        type="TgBotAccessToken",
         id=id,
         created_at=created_at,
         expires_at=expires_at,
@@ -28,9 +28,9 @@ def create_tg_bot_access_token(
     token_str = jwt.encode(
         payload=token.model_dump(),
         key=TG_BOT_ACCESS_TOKEN_SECRET,
-        algorithm='HS256'
+        algorithm="HS256"
     )
 
-    token_str = f'tg_bot_{token_str}'
+    token_str = f"tg_bot_{token_str}"
 
     return token_str, token

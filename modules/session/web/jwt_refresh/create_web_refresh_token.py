@@ -18,7 +18,7 @@ def create_web_refresh_token(
     expires_at = created_at + lifetime
 
     token = WebRefreshToken(
-        type='WebRefreshToken',
+        type="WebRefreshToken",
         id=id,
         created_at=created_at,
         expires_at=expires_at,
@@ -30,9 +30,9 @@ def create_web_refresh_token(
     token_str = jwt.encode(
         payload=token.model_dump(),
         key=WEB_REFRESH_TOKEN_SECRET,
-        algorithm='HS256'
+        algorithm="HS256"
     )
 
-    token_str = f'web_{token_str}'
+    token_str = f"web_{token_str}"
 
     return token_str, token

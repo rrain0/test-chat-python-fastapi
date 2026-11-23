@@ -28,9 +28,9 @@ class FastAPIPostgres:
             # CURRENT LIFESPAN
             # --- STARTUP CODE ---
             # Run structural creations asynchronously
-            print('Initializing database tables...')
+            print("Initializing database tables...")
             # Печатает в консоль список таблиц, которые SQLModel видит в памяти
-            print('Registered tables found:', SQLModel.metadata.tables.keys())
+            print("Registered tables found:", SQLModel.metadata.tables.keys())
 
             async with self.engine.begin() as conn:
                 await conn.run_sync(SQLModel.metadata.create_all)
@@ -44,7 +44,7 @@ class FastAPIPostgres:
 
             # CURRENT LIFESPAN
             # --- SHUTDOWN CODE ---
-            print('Closing database connections...')
+            print("Closing database connections...")
             await self.engine.dispose()
 
         # Re-assign the app's router lifespan context dynamically

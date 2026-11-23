@@ -10,7 +10,7 @@ from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
 
 
-router_auth_web_refresh = APIRouter(prefix='/api/auth/web/refresh')
+router_auth_web_refresh = APIRouter(prefix="/api/auth/web/refresh")
 
 
 

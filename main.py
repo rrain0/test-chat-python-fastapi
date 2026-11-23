@@ -39,42 +39,42 @@ init_openapi(app)
 
 
 # Define a GET route at the root URL
-@app.get('/dev/hello-world')
+@app.get("/dev/hello-world")
 def read_root():
-    raise 'Hello World!'
-    return {'Hello': 'World'}
+    #raise "Hello World!"
+    return {"Hello": "World"}
 
 
 # Define a dynamic route with a path parameter
-@app.get('/dev/items/{item_id}')
+@app.get("/dev/items/{item_id}")
 def read_item(item_id: int, q: str = None):
-    return {'item_id': item_id, 'q': q}
+    return {"item_id": item_id, "q": q}
 
 
 
-@app.get('/dev/redis-get-set')
+@app.get("/dev/redis-get-set")
 async def get_data(redis: AsyncRedisDep):
     """Directly use the Redis client via dependency injection."""
-    await redis.set(f'{REDIS_PREFIX}:dev:redis-get-set', 'Hello from Redis SDK', ex=60)
-    value = await redis.get(f'{REDIS_PREFIX}:dev:redis-get-set')
-    return {'data': value}
+    await redis.set(f"{REDIS_PREFIX}:dev:redis-get-set", "Hello from Redis SDK", ex=60)
+    value = await redis.get(f"{REDIS_PREFIX}:dev:redis-get-set")
+    return {"data": value}
 
 
 
 # Response is automatically cached
 @app.get(
-    '/dev/redis-cached-endpoint',
+    "/dev/redis-cached-endpoint",
      # Automatically cache the entire HTTP response for 300 seconds.
-     dependencies=[Depends(cache(ttl=300, eviction_group='redis-cached-endpoint'))]
+     dependencies=[Depends(cache(ttl=300, eviction_group="redis-cached-endpoint"))]
 )
 async def get_cached_endpoint():
-    return {'message': 'This response is cached!'}
+    return {"message": "This response is cached!"}
 
 # Force invalidate cached response
 @app.get(
-    '/dev/invalidate-redis-cached-endpoint',
-     dependencies=[Depends(cache_evict(eviction_group='redis-cached-endpoint'))]
+    "/dev/invalidate-redis-cached-endpoint",
+     dependencies=[Depends(cache_evict(eviction_group="redis-cached-endpoint"))]
 )
 async def invalidate_cached_endpoint():
-    return {'message': 'Cache group "redis-cached-endpoint" was invalidated!'}
+    return {"message": "'Cache group 'redis-cached-endpoint' was invalidated!'"}
 

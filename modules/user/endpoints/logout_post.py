@@ -7,7 +7,7 @@ from modules.session.web.repo.remove_web_session import commit_remove_web_sessio
 from modules.session.app.provider.provide_app_session import ProvideAppSessionDep
 
 
-router_user_logout = APIRouter(prefix='/api/user/logout')
+router_user_logout = APIRouter(prefix="/api/user/logout")
 
 
 @router_user_logout.post(

@@ -7,7 +7,7 @@ from modules.session.web.redis.web_session import RdWebSessionByToken
 
 
 def rd_get_current_user_web_session_key(user_id: UUID, session_id: UUID):
-    return f'{rd_get_user_web_session_key(user_id, session_id)}:current'
+    return f"{rd_get_user_web_session_key(user_id, session_id)}:current"
 
 
 async def rd_get_current_web_session(

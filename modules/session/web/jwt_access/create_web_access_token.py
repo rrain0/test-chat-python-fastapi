@@ -19,7 +19,7 @@ def create_web_access_token(
     expires_at = created_at + lifetime
 
     token = WebAccessToken(
-        type='WebAccessToken',
+        type="WebAccessToken",
         id=id,
         created_at=created_at,
         expires_at=expires_at,
@@ -32,9 +32,9 @@ def create_web_access_token(
     token_str = jwt.encode(
         payload=token.model_dump(),
         key=WEB_ACCESS_TOKEN_SECRET,
-        algorithm='HS256'
+        algorithm="HS256"
     )
 
-    token_str = f'web_{token_str}'
+    token_str = f"web_{token_str}"
 
     return token_str, token

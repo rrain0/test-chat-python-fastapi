@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
-from shared.utils.pydantics.pydantics import DatetimeAsIsoZ, UuidAsStr
+from shared.utils.pydantics.datetime_as_iso_z import DatetimeAsIsoZ
+from shared.utils.pydantics.uuid_as_string import UuidAsStr
 
 
 class RdWebSessionByToken(BaseModel):

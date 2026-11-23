@@ -1,15 +1,15 @@
-from uuid import UUID
+from uuid import UUID, uuid7
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from modules.chat.db_tables.chat import DbChat
-from modules.chat.db_tables.chat_to_user import DbChatToUser
-from modules.chat.db_views.chat_with_user_ids_view import DbChatWithUserIdsView
+from modules.chat.postgres.chat import DbChat
+from modules.chat.postgres.chat_to_user import DbChatToUser
+from modules.chat.postgres.chat_with_user_ids_view import DbChatWithUserIdsView
 
 
 async def upsert_chat_of_single_user(postgres: AsyncSession, user_id: UUID):
-    # 1. Ищем существующий одиночный чат пользователя.
+    # 1. Find an existing single-user chat
     chat_view = (await postgres.exec(
         select(DbChatWithUserIdsView)
         .where(DbChatWithUserIdsView.user_ids == [user_id])
@@ -22,7 +22,7 @@ async def upsert_chat_of_single_user(postgres: AsyncSession, user_id: UUID):
 
         # 2. Если чата нет — создаем сам чат
 
-        new_chat = DbChat()  # UUID сгенерируется на стороне Python автоматически
+        new_chat = DbChat(id=uuid7())
         postgres.add(new_chat)
         await postgres.flush()
         await postgres.refresh(new_chat)

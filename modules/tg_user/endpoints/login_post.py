@@ -6,7 +6,7 @@ from shared.backend.modules.tg_user.api_model.tg_user_to_login import BackApiTgU
 from shared.backend.modules.user.api_model.user_logged_in import BackApiUserLoggedIn
 from core.postgres.init import AsyncPostgresDep
 from shared.backend.modules.error.api_model.error import BackApiError
-from modules.user.convert.db_user_to_back_api_user import db_user_to_back_api_user
+from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
 from modules.tg_user.db_tables.tg_user import PgTgUser
 from modules.tg_user.db_repo.upsert_tg_user import pg_upsert_tg_user_by_id
 from modules.user.postgres.get_user_by_username import pg_get_user_by_username
@@ -16,7 +16,7 @@ from services.jwt.model.user_for_access_token import UserForAccessToken
 from modules.pwd_hash.pwd_hash import verify_pwd
 from shared.utils.datetimes.now import now
 
-router_tg_user_login = APIRouter(prefix='/api/tg_user/login')
+router_tg_user_login = APIRouter(prefix="/api/tg_user/login")
 
 
 @router_tg_user_login.post("", status_code=status.HTTP_200_OK, response_model=BackApiUserLoggedIn)
@@ -62,7 +62,7 @@ async def tg_user_login_post(
 
     return BackApiUserLoggedIn(
         access_token=tg_user_access_token,
-        user=db_user_to_back_api_user(db_user)
+        user=pg_user_to_back_api_user(db_user)
     )
 
 
@@ -72,8 +72,8 @@ def no_user():
         status_code=status.HTTP_401_UNAUTHORIZED,
         content=jsonable_encoder(
             BackApiError(
-                error_code='NO_USER',
-                error_msg='Пользователь с такой парой логин-пароль не найден',
+                error_code="NO_USER",
+                error_msg="Пользователь с такой парой логин-пароль не найден",
             )
         )
     )

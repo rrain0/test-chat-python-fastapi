@@ -4,7 +4,7 @@ from sqlmodel import Field, SQLModel, String, BigInteger
 
 
 class PgTgUser(SQLModel, table=True):
-    __tablename__ = 'tg_users'
+    __tablename__ = "tg_users"
     id: int = Field(
         nullable=False,
         sa_type=BigInteger,
@@ -14,7 +14,7 @@ class PgTgUser(SQLModel, table=True):
     user_id: UUID = Field(
         nullable=False,
         index=True,
-        foreign_key='users.id',
+        foreign_key="users.id",
     )
     username: str | None = Field(
         nullable=True,

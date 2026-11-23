@@ -1,20 +1,21 @@
 from pydantic import BaseModel, ConfigDict, Field
 
-from shared.utils.pydantics.pydantics import DatetimeAsInt, UuidAsStr
+from shared.utils.pydantics.datetime_as_int import DatetimeAsInt
+from shared.utils.pydantics.uuid_as_string import UuidAsStr
 
 
 class WebAccessToken(BaseModel):
     # Configure model to enforce alias mapping everywhere by default
     model_config = ConfigDict(
         populate_by_name=True, # Allows instantiating with either user_id or sub
-        serialize_by_alias=True, # Forces model_dump() to output 'sub' and 'exp' automatically
+        serialize_by_alias=True, # Forces model_dump() to output "sub" and "exp" automatically
     )
 
     type: str
     id: UuidAsStr
-    created_at: DatetimeAsInt = Field(alias='iat')
-    expires_at: DatetimeAsInt = Field(alias='exp')
+    created_at: DatetimeAsInt = Field(alias="iat")
+    expires_at: DatetimeAsInt = Field(alias="exp")
     session_id: UuidAsStr
     refresh_token_id: UuidAsStr
-    user_id: UuidAsStr = Field(alias='sub')
+    user_id: UuidAsStr = Field(alias="sub")
     user_username: str

@@ -29,16 +29,16 @@ class ApiErrorCase(BaseModel):
             content=jsonable_encoder(self.to_back_api_error())
         )
 
-    def add_example_to_openapi_responses(self, responses: Dict) -> 'ApiErrorCase':
+    def add_example_to_openapi_responses(self, responses: Dict) -> "ApiErrorCase":
         (
             responses
                 .setdefault(str(self.status_code), {})
-                .setdefault('content', {})
-                .setdefault('application/json', {})
-                .setdefault('examples', {})
+                .setdefault("content", {})
+                .setdefault("application/json", {})
+                .setdefault("examples", {})
                 .setdefault(self.error_code, {
-                    'summary': self.error_code,
-                    'value': self.to_back_api_error().model_dump(),
+                    "summary": self.error_code,
+                    "value": self.to_back_api_error().model_dump(),
                 })
         )
         return self

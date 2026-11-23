@@ -13,8 +13,8 @@ from services.jwt.lib.jwt_tg_user_service import decode_tg_user_access_token
 def credentials_exception():
     return HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail='Unauthorized',
-        headers={'WWW-Authenticate': 'Bearer'},
+        detail="Unauthorized",
+        headers={"WWW-Authenticate": "Bearer"},
     )
 
 
@@ -34,11 +34,11 @@ async def get_current_user_by_tg_user(
     if not db_tg_user:
         raise credentials_exception()
 
-    db_user = await pg_get_user_by_id(tg_user_token.user.id, postgres)
-    if not db_user:
+    pg_user = await pg_get_user_by_id(tg_user_token.user.id, postgres)
+    if not pg_user:
         raise credentials_exception()
 
-    if db_user.id != db_tg_user.user_id:
+    if pg_user.id != db_tg_user.user_id:
         raise credentials_exception()
 
-    return db_user
+    return pg_user

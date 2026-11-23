@@ -9,7 +9,7 @@ from modules.session.web.redis.web_session import RdWebSessionByToken
 
 
 def rd_get_grace_user_web_session_key(user_id: UUID, session_id: UUID):
-    return f'{rd_get_user_web_session_key(user_id, session_id)}:grace'
+    return f"{rd_get_user_web_session_key(user_id, session_id)}:grace"
 
 
 async def rd_get_grace_web_session(
