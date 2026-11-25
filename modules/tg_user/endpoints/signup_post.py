@@ -16,11 +16,11 @@ from modules.user.postgres.user import PgUser
 from modules.tg_user.db_repo.upsert_tg_user import pg_upsert_tg_user_by_id
 from modules.user.postgres.get_user_by_username import pg_get_user_by_username
 from services.jwt.model.user_for_access_token import UserForAccessToken
-from modules.pwd_hash.pwd_hash import hash_pwd
+from modules.pwd_hash.pwd_hash import hash_pwd_athread
 from shared.utils.datetimes.now import now
 from pydantic import model_validator
-from shared.backend.modules.validators.user_to_signup_pwd import validate_user_to_signup_pwd
-from shared.backend.modules.validators.user_to_signup_username import validate_user_to_signup_username
+from shared.backend.modules.user.validators.user_to_signup_pwd import validate_user_to_signup_pwd
+from shared.backend.modules.user.validators.user_to_signup_username import validate_user_to_signup_username
 
 router_tg_user_signup = APIRouter(prefix="/api/tg_user/signup")
 
@@ -54,7 +54,7 @@ async def tg_user_signup_post(
         )
 
     # Хэшируем пароль
-    hashed_pwd = hash_pwd(user_to_signup.pwd)
+    hashed_pwd = await hash_pwd_athread(user_to_signup.pwd)
 
     db_user = PgUser(
         id=uuid7(),

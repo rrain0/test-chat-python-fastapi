@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
 from sqlmodel import Field, SQLModel, String
@@ -49,3 +50,16 @@ class PgWebSession(SQLModel, table=True):
         nullable=True,
         sa_type=String(250),
     )
+
+
+
+class PgWebSessionUpdate(SQLModel):
+    updated_at: Optional[datetime] = None
+
+    refresh_token_id: Optional[UUID] = None
+    refresh_token_created_at: Optional[datetime] = None
+    refresh_token_expires_at: Optional[datetime] = None
+
+    last_active_at: Optional[datetime] = None
+    last_active_at_ip: Optional[str | None] = None
+    last_active_at_device: Optional[str | None] = None

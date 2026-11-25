@@ -8,12 +8,18 @@ from modules.chat.postgres.chat_to_user import DbChatToUser
 from modules.chat.postgres.chat_with_user_ids_view import DbChatWithUserIdsView
 
 
-async def upsert_chat_of_single_user(postgres: AsyncSession, user_id: UUID):
+async def pg_upsert_chat_of_single_user(
+        user_id: UUID,
+        postgres: AsyncSession,
+):
+    async def get_chat_view():
+        return (await postgres.exec(
+            select(DbChatWithUserIdsView)
+            .where(DbChatWithUserIdsView.user_ids == [user_id])
+        )).first()
+
     # 1. Find an existing single-user chat
-    chat_view = (await postgres.exec(
-        select(DbChatWithUserIdsView)
-        .where(DbChatWithUserIdsView.user_ids == [user_id])
-    )).first()
+    chat_view = await get_chat_view()
 
     if chat_view: return chat_view
 

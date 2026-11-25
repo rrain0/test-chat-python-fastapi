@@ -1,3 +1,4 @@
+import asyncio
 from uuid import uuid7
 
 from redis_fastapi import AsyncRedisDep
@@ -10,7 +11,7 @@ from modules.session.web.jwt_refresh.create_web_refresh_token import create_web_
 from modules.session.web.jwt_refresh.decode_web_refresh_token import decode_web_refresh_token
 from modules.session.web.postgres.get_web_session_by_id_by_user_id import pg_get_web_session_by_id_by_user_id
 from modules.session.web.postgres.upsert_web_session_by_id import pg_upsert_web_session_by_id
-from modules.session.web.postgres.web_session import PgWebSession
+from modules.session.web.postgres.web_session import PgWebSession, PgWebSessionUpdate
 from modules.session.web.redis.repo_grace_web_session import rd_get_grace_web_session
 from modules.session.web.redis.repo_prev_web_session import rd_get_prev_web_session, rd_set_prev_web_session
 from modules.session.web.redis.repo_current_web_session import rd_get_current_web_session, rd_set_current_web_session
@@ -36,6 +37,8 @@ async def commit_refresh_web_session(
         redis,
         rd_get_user_web_session_key(refresh_token.user_id, refresh_token.session_id),
     ):
+        await asyncio.sleep(5)
+
         rd_web_session = await rd_get_current_web_session(
             user_id=refresh_token.user_id,
             session_id=refresh_token.session_id,
@@ -140,7 +143,19 @@ async def commit_refresh_web_session(
                 user_username=new_refresh_token.user_username,
             )
 
-            await pg_upsert_web_session_by_id(pg_web_session, postgres)
+            await pg_upsert_web_session_by_id(
+                pg_web_session=pg_web_session,
+                pg_web_session_update=PgWebSessionUpdate(
+                    updated_at=pg_web_session.updated_at,
+                    refresh_token_id=pg_web_session.refresh_token_id,
+                    refresh_token_created_at=pg_web_session.refresh_token_created_at,
+                    refresh_token_expires_at=pg_web_session.refresh_token_expires_at,
+                    last_active_at=pg_web_session.last_active_at,
+                    last_active_at_ip=pg_web_session.last_active_at_ip,
+                    last_active_at_device=pg_web_session.last_active_at_device,
+                ),
+                postgres=postgres,
+            )
             await postgres.commit()
 
             # Move web session to prev

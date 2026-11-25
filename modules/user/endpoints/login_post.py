@@ -10,14 +10,14 @@ from core.postgres.init import AsyncPostgresDep
 from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
 from modules.session.web.token_store.refresh_token import add_web_refresh_token
 from modules.user.postgres.get_user_by_username import pg_get_user_by_username
-from modules.pwd_hash.pwd_hash import verify_pwd
+from modules.pwd_hash.pwd_hash import verify_pwd_athread
 from shared.utils.fastapis.api_error_case import ApiErrorCase
 from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
 from redis_fastapi import AsyncRedisDep
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from shared.utils.fastapis.is_auth_header_not_exists import auth_header_not_exists
+from shared.utils.fastapis.auth_header_not_exists import auth_header_not_exists
 
 
 router_user_login = APIRouter(prefix="/api/user/login")
@@ -91,7 +91,7 @@ async def verify_credentials(
     if not pg_user:
         raise invalid_credentials_error.to_exception()
 
-    pwd_is_valid = verify_pwd(pwd, pg_user.pwd_hash)
+    pwd_is_valid = await verify_pwd_athread(pwd, pg_user.pwd_hash)
 
     if not pwd_is_valid:
         raise invalid_credentials_error.to_exception()

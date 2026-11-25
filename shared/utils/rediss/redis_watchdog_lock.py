@@ -1,11 +1,12 @@
 import asyncio
 import contextlib
+import logging
 
 from redis_fastapi import AsyncRedisDep
 
+logger = logging.getLogger(__name__)
 
-
-class RedisLockLostError(asyncio.CancelledError):
+class RedisLockLostError(Exception):
     """Raised when the background watchdog fails to extend the Redis lock."""
     pass
 
@@ -15,12 +16,15 @@ class RedisLockLostError(asyncio.CancelledError):
 async def redis_watchdog_lock(
     redis: AsyncRedisDep,
     key: str,
-    timeout: float = 2.0,
-    renew_interval: float = 1.0,
     acquire_timeout: float = 6.0,
+    renew_interval: float = 1.0,
+    timeout: float = 3.0,
 ):
+    key = f'lock:{key}'
     owner_task = asyncio.current_task()
-    lock_lost = asyncio.Event()
+    failed_to_extend_lock = False
+    extend_error: Exception | None = None
+
     lock = redis.lock(
         name=key,
 
@@ -31,10 +35,10 @@ async def redis_watchdog_lock(
         timeout=timeout, # lock will be released after timeout if not extended
     )
 
-    if not await lock.acquire():
-        raise TimeoutError(f"Could not acquire lock '{key}' within {acquire_timeout} seconds")
-
+    # Task for lock extending (only extending, not creating or releasing)
     async def _watchdog():
+        nonlocal extend_error
+        nonlocal failed_to_extend_lock
         try:
             while True:
                 await asyncio.sleep(renew_interval)
@@ -43,26 +47,35 @@ async def redis_watchdog_lock(
                     # Raises an error if lock expired or was lost
                     extended = await lock.extend(timeout, replace_ttl=True)
                     if not extended:
-                        raise RuntimeError("Failed to extend redis lock")
-                except Exception:
-                    lock_lost.set()
-                    if owner_task and not owner_task.done():
-                        owner_task.cancel("Redis lock expired or lost")
+                        raise RuntimeError(f"Redis lock.extend() returned False for lock '{key}'")
+                except Exception as ex:
+                    # asyncio.CancelledError does not inherit from Exception, but from BaseException
+                    extend_error = ex
+                    failed_to_extend_lock = True
+                    if owner_task:
+                        owner_task.cancel(f"Failed to extend redis lock '{key}'")
                     break
         except asyncio.CancelledError:
+            # The watchdog task was canceled from the outside
             pass
 
-    watchdog_task = asyncio.create_task(_watchdog())
+
+    if not await lock.acquire():
+        raise TimeoutError(f"Could not acquire lock '{key}' within {acquire_timeout} seconds")
+
+    watchdog_task = asyncio.create_task(_watchdog(), eager_start=True)
+
+
     try:
         yield lock
-    except asyncio.CancelledError as ex:
-        if lock_lost.is_set():
-            raise RedisLockLostError(f"Aborted: lock '{key}' was lost") from ex
+    except asyncio.CancelledError:
+        if failed_to_extend_lock:
+            raise RedisLockLostError(f"Aborted: lock '{key}' was lost") from extend_error
         raise
     finally:
         watchdog_task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await watchdog_task
-        if not lock_lost.is_set():
+        if not failed_to_extend_lock:
             with contextlib.suppress(Exception):
                 await lock.release()

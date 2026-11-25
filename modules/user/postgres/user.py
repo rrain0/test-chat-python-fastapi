@@ -11,12 +11,12 @@ class PgUser(SQLModel, table=True):
         index=True,
     )
     username: str = Field(
-        sa_type=String(30),
+        sa_type=String(32),
         nullable=False,
         index=True,
         unique=True,
         min_length=4,
-        max_length=30,
+        max_length=32,
     )
     pwd_hash: str = Field(
         sa_type=String(60),

@@ -8,8 +8,8 @@ from shared.utils.pydantics.uuid_as_string import UuidAsStr
 class TgBotAccessToken(BaseModel):
     # Configure model to enforce alias mapping everywhere by default
     model_config = ConfigDict(
-        populate_by_name=True,   # Allows instantiating with either user_id or sub
-        serialize_by_alias=True,  # Forces model_dump() to output "sub" and "exp" automatically
+        populate_by_name=True, # Allows instantiating with either user_id or sub
+        serialize_by_alias=True, # Forces model_dump() to output "sub" and "exp" automatically
     )
 
     type: str

@@ -13,14 +13,14 @@ from core.postgres.init import AsyncPostgresDep
 from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
 from modules.session.web.token_store.refresh_token import add_web_refresh_token
 from modules.user.postgres.user import PgUser
-from modules.pwd_hash.pwd_hash import hash_pwd
+from modules.pwd_hash.pwd_hash import hash_pwd_athread
 from pydantic import field_validator
 
 from shared.utils.fastapis.api_error_case import ApiErrorCase
 from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
-from shared.backend.modules.validators.user_to_signup_pwd import validate_user_to_signup_pwd
-from shared.backend.modules.validators.user_to_signup_username import validate_user_to_signup_username
+from shared.backend.modules.user.validators.user_to_signup_pwd import validate_user_to_signup_pwd
+from shared.backend.modules.user.validators.user_to_signup_username import validate_user_to_signup_username
 
 
 router_user_signup = APIRouter(prefix="/api/user/signup")
@@ -79,7 +79,7 @@ async def user_signup_post(
         raise username_exists_error.to_exception()
 
     # Hash the password
-    hashed_pwd = hash_pwd(user_to_signup.pwd)
+    hashed_pwd = await hash_pwd_athread(user_to_signup.pwd)
 
     # Create database model instance
     pg_user = PgUser(

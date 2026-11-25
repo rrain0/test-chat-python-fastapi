@@ -13,7 +13,7 @@ from modules.user.postgres.get_user_by_username import pg_get_user_by_username
 from services.jwt.lib.jwt_tg_user_service import create_tg_user_access_token
 from services.jwt.model.tg_user_for_access_token import TgUserForAccessToken
 from services.jwt.model.user_for_access_token import UserForAccessToken
-from modules.pwd_hash.pwd_hash import verify_pwd
+from modules.pwd_hash.pwd_hash import verify_pwd_athread
 from shared.utils.datetimes.now import now
 
 router_tg_user_login = APIRouter(prefix="/api/tg_user/login")
@@ -29,7 +29,7 @@ async def tg_user_login_post(
     if not db_user:
         return no_user()
 
-    pwd_is_valid = verify_pwd(user_to_login.pwd, db_user.pwd_hash)
+    pwd_is_valid = await verify_pwd_athread(user_to_login.pwd, db_user.pwd_hash)
 
     if not pwd_is_valid:
         return no_user()

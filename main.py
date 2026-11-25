@@ -12,7 +12,6 @@ from core.postgres.init import init_postgres
 from modules.chat.init import init_chat
 from modules.msg.init import init_msg
 
-from core.config.env import REDIS_PREFIX
 from modules.user.init import init_user
 
 
@@ -55,8 +54,8 @@ def read_item(item_id: int, q: str = None):
 @app.get("/dev/redis-get-set")
 async def get_data(redis: AsyncRedisDep):
     """Directly use the Redis client via dependency injection."""
-    await redis.set(f"{REDIS_PREFIX}:dev:redis-get-set", "Hello from Redis SDK", ex=60)
-    value = await redis.get(f"{REDIS_PREFIX}:dev:redis-get-set")
+    await redis.set(f"dev:redis-get-set", "Hello from Redis SDK", ex=60)
+    value = await redis.get(f"dev:redis-get-set")
     return {"data": value}
 
 

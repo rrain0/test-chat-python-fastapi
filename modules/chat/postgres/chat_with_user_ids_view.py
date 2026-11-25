@@ -4,6 +4,12 @@ from sqlmodel import SQLModel, select, func
 
 from modules.chat.postgres.chat_to_user import DbChatToUser
 
+
+class DbChatWithUserIdsView(SQLModel):
+    id: UUID
+    user_ids: List[UUID]
+
+
 # 1. Сначала пишем чистый SQL-запрос сборки данных, который и будет нашим "View".
 # Собираем chat_id и массив всех user_id, которые в нем состоят.
 chat_with_user_ids_select = (
@@ -14,12 +20,6 @@ chat_with_user_ids_select = (
     )
     .group_by(DbChatToUser.chat_id)
 )
-
-
-class DbChatWithUserIdsView(SQLModel):
-    id: UUID
-    user_ids: List[UUID]
-
 
 
 # Связываем Pydantic-класс с подзапросом через императивный маппинг SQLAlchemy
