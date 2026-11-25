@@ -1,4 +1,3 @@
-import asyncio
 from uuid import uuid7
 
 from redis_fastapi import AsyncRedisDep
@@ -18,7 +17,7 @@ from modules.session.web.redis.repo_current_web_session import rd_get_current_we
 from modules.session.web.redis.repo_web_session import rd_get_user_web_session_key
 from modules.session.web.repo.remove_web_session import remove_web_session
 from shared.utils.datetimes.now import now
-from shared.utils.rediss.redis_watchdog_lock import redis_watchdog_lock
+from shared.utils.rediss.watchdog_lock import redis_watchdog_lock
 
 
 async def commit_refresh_web_session(
@@ -37,8 +36,6 @@ async def commit_refresh_web_session(
         redis,
         rd_get_user_web_session_key(refresh_token.user_id, refresh_token.session_id),
     ):
-        await asyncio.sleep(8)
-
         rd_web_session = await rd_get_current_web_session(
             user_id=refresh_token.user_id,
             session_id=refresh_token.session_id,

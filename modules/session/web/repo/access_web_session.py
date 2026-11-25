@@ -11,7 +11,7 @@ from modules.session.web.redis.repo_current_web_session import rd_set_current_we
 from modules.session.web.redis.repo_web_session import rd_get_user_web_session_key
 from modules.session.web.repo.remove_web_session import remove_web_session
 from shared.utils.datetimes.now import now
-from shared.utils.rediss.redis_watchdog_lock import redis_watchdog_lock
+from shared.utils.rediss.watchdog_lock import redis_watchdog_lock
 
 
 async def commit_access_web_session(

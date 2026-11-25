@@ -8,7 +8,7 @@ from modules.session.web.redis.repo_grace_web_session import rd_delete_grace_web
 from modules.session.web.redis.repo_prev_web_session import rd_delete_prev_web_session
 from modules.session.web.redis.repo_current_web_session import rd_delete_current_web_session
 from modules.session.web.redis.repo_web_session import rd_get_user_web_session_key
-from shared.utils.rediss.redis_watchdog_lock import redis_watchdog_lock
+from shared.utils.rediss.watchdog_lock import redis_watchdog_lock
 
 
 async def commit_remove_web_session(
