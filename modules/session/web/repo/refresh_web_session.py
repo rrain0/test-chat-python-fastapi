@@ -37,7 +37,7 @@ async def commit_refresh_web_session(
         redis,
         rd_get_user_web_session_key(refresh_token.user_id, refresh_token.session_id),
     ):
-        await asyncio.sleep(5)
+        await asyncio.sleep(8)
 
         rd_web_session = await rd_get_current_web_session(
             user_id=refresh_token.user_id,

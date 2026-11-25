@@ -1173,6 +1173,7 @@ name = "test-chat-python-fastapi"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "anyio" },
     { name = "bcrypt" },
     { name = "fastapi", extra = ["standard"] },
     { name = "fastapi-redis-sdk" },
@@ -1189,6 +1190,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "anyio", specifier = "==4.15.1" },
     { name = "bcrypt", specifier = "==5.0.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.161.1" },
     { name = "fastapi-redis-sdk", specifier = "==0.9.1" },
