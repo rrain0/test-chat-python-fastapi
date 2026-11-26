@@ -2,18 +2,18 @@ from fastapi import status, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from shared.backend.modules.tg_user.api_model.tg_user_to_login import BackApiTgUserToLogin
-from shared.backend.modules.user.api_model.user_logged_in import BackApiUserLoggedIn
-from core.postgres.init import AsyncPostgresDep
-from shared.backend.modules.error.api_model.error import BackApiError
-from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
+from shared.backend.modules.tg_user.api_model.to_login import BackApiTgUserToLogin
+from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
+from core.postgres.setup import AsyncPostgresDep
+from core.api_error.back_api_error import BackApiError
+from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
 from modules.tg_user.db_tables.tg_user import PgTgUser
 from modules.tg_user.db_repo.upsert_tg_user import pg_upsert_tg_user_by_id
-from modules.user.postgres.get_user_by_username import pg_get_user_by_username
+from modules.user.postgres.repo.get_by_username import pg_get_user_by_username
 from services.jwt.lib.jwt_tg_user_service import create_tg_user_access_token
 from services.jwt.model.tg_user_for_access_token import TgUserForAccessToken
 from services.jwt.model.user_for_access_token import UserForAccessToken
-from modules.pwd_hash.pwd_hash import verify_pwd_athread
+from core.pwd_hash.pwd_hash import verify_pwd_athread
 from shared.utils.datetimes.now import now
 
 router_tg_user_login = APIRouter(prefix="/api/tg_user/login")

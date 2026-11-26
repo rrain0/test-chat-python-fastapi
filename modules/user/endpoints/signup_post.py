@@ -5,33 +5,30 @@ from fastapi import Request, Response
 from pydantic_core import PydanticCustomError
 from redis_fastapi import AsyncRedisDep
 
-from modules.user.postgres.user_exists_by_username import pg_user_exists_by_username
-from modules.session.web.repo.create_web_session import commit_create_web_session
-from shared.backend.modules.user.api_model.user_logged_in import BackApiUserLoggedIn
-from shared.backend.modules.user.api_model.user_to_signup import BackApiUserToSignup
-from core.postgres.init import AsyncPostgresDep
-from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
+from core.api_error.utils import add_api_error_case_to_openapi_responses_example
+from modules.user.api_errors.username_exists import username_exists_error_case
+from modules.user.postgres.repo.exists_by_username import pg_user_exists_by_username
+from modules.session.web.actions.create import commit_create_web_session
+from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
+from shared.backend.modules.user.api_model.to_signup import BackApiUserToSignup
+from core.postgres.setup import AsyncPostgresDep
+from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
 from modules.session.web.token_store.refresh_token import add_web_refresh_token
-from modules.user.postgres.user import PgUser
-from modules.pwd_hash.pwd_hash import hash_pwd_athread
+from modules.user.postgres.tables.user import PgUser
+from core.pwd_hash.pwd_hash import hash_pwd_athread
 from pydantic import field_validator
 
-from shared.utils.fastapis.api_error_case import ApiErrorCase
 from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
 from shared.backend.modules.user.validators.user_to_signup_pwd import validate_user_to_signup_pwd
 from shared.backend.modules.user.validators.user_to_signup_username import validate_user_to_signup_username
 
 
-router_user_signup = APIRouter(prefix="/api/user/signup")
+router_user_signup_post = APIRouter(prefix="/api/user/signup")
 
 
 responses = { }
-username_exists_error = ApiErrorCase(
-    status_code=status.HTTP_400_BAD_REQUEST,
-    error_code="USERNAME_EXISTS",
-    error_msg="User with this username already exists",
-).add_example_to_openapi_responses(responses)
+add_api_error_case_to_openapi_responses_example(username_exists_error_case, responses)
 
 
 class BackApiUserToSignupWithValidation(BackApiUserToSignup):
@@ -41,10 +38,7 @@ class BackApiUserToSignupWithValidation(BackApiUserToSignup):
         try:
             validate_user_to_signup_username(v)
         except ValueError as ex:
-            raise PydanticCustomError(
-                "invalid_username",
-                str(ex),
-            )
+            raise PydanticCustomError("invalid_username", str(ex))
         return v
 
     @field_validator("pwd", mode="after")
@@ -53,14 +47,11 @@ class BackApiUserToSignupWithValidation(BackApiUserToSignup):
         try:
             validate_user_to_signup_pwd(v)
         except ValueError as ex:
-            raise PydanticCustomError(
-                "invalid_password",
-                str(ex),
-            )
+            raise PydanticCustomError("invalid_password", str(ex))
         return v
 
 
-@router_user_signup.post(
+@router_user_signup_post.post(
     path="", 
     status_code=status.HTTP_201_CREATED, 
     response_model=BackApiUserLoggedIn,
@@ -76,7 +67,7 @@ async def user_signup_post(
     # Check whether user with this username already exists
     pg_user_exists = await pg_user_exists_by_username(user_to_signup.username, postgres)
     if pg_user_exists:
-        raise username_exists_error.to_exception()
+        raise username_exists_error_case.to_exception()
 
     # Hash the password
     hashed_pwd = await hash_pwd_athread(user_to_signup.pwd)
@@ -94,15 +85,19 @@ async def user_signup_post(
     await postgres.flush()
 
     # Create user session and save into Postgres permanently
-    access_token_str, access_token, refresh_token_str, refresh_token \
-        = await commit_create_web_session(
-            user_id=pg_user.id,
-            user_username=pg_user.username,
-            user_ip=get_client_ip(request),
-            user_agent_str=get_client_user_agent_str(request),
-            postgres=postgres,
-            redis=redis,
-        )
+    (
+        access_token_str,
+        access_token,
+        refresh_token_str,
+        refresh_token,
+    ) = await commit_create_web_session(
+        user_id=pg_user.id,
+        user_username=pg_user.username,
+        user_ip=get_client_ip(request),
+        user_agent_str=get_client_user_agent_str(request),
+        postgres=postgres,
+        redis=redis,
+    )
 
     # Add refresh token to response as a cookie
     add_web_refresh_token(response, refresh_token_str, refresh_token.expires_at)

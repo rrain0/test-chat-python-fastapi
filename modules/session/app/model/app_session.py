@@ -2,8 +2,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from shared.backend.modules.session.tg_bot.jwt_access.tg_bot_access_token import TgBotAccessToken
-from modules.session.web.jwt_access.web_access_token import WebAccessToken
+from shared.backend.modules.session.tg_bot.jwt_access.token import TgBotAccessToken
+from modules.session.web.jwt_access.token import WebAccessToken
 
 
 class AppSession(BaseModel):

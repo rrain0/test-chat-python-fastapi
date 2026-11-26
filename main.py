@@ -1,38 +1,38 @@
 from fastapi import FastAPI, Depends
 from redis_fastapi import cache, AsyncRedisDep, cache_evict
 
-from modules.auth.web.init import init_auth_web
-from modules.global_exception_handlers.api_error_case_exception_handler import register_api_error_case_exception_handler
-from modules.global_exception_handlers.request_validation_error_handler import register_request_validation_error_handler
-from modules.global_openapi_setup.global_openapi_setup import init_openapi
-from modules.session.tg_bot.init import init_tg_bot_session
-from modules.session.web.init import init_web_session
-from core.redis.init import init_redis
-from core.postgres.init import init_postgres
-from modules.chat.init import init_chat
-from modules.msg.init import init_msg
+from modules.auth.web.setup import setup_auth_web
+from core.exception_handlers.api_error_case import setup_api_error_case_exception_handler
+from core.exception_handlers.request_validation import setup_request_validation_error_handler
+from core.openapi.setup import setup_openapi
+from modules.session.tg_bot.setup import setup_tg_bot_session
+from modules.session.web.setup import setup_web_session
+from core.redis.setup import setup_redis
+from core.postgres.setup import setup_postgres
+from modules.chat.setup import setup_chat
+from modules.msg.setup import setup_msg
 
-from modules.user.init import init_user
+from modules.user.setup import setup_user
 
 
 
 # Create the FastAPI instance
 app = FastAPI()
 
-init_redis(app)
-init_postgres(app)
+setup_redis(app)
+setup_postgres(app)
 
-register_request_validation_error_handler(app)
-register_api_error_case_exception_handler(app)
+setup_request_validation_error_handler(app)
+setup_api_error_case_exception_handler(app)
 
-init_auth_web(app)
-init_web_session(app)
-init_user(app)
-init_tg_bot_session(app)
-init_chat(app)
-init_msg(app)
+setup_auth_web(app)
+setup_web_session(app)
+setup_user(app)
+setup_tg_bot_session(app)
+setup_chat(app)
+setup_msg(app)
 
-init_openapi(app)
+setup_openapi(app)
 
 
 
@@ -76,4 +76,3 @@ async def get_cached_endpoint():
 )
 async def invalidate_cached_endpoint():
     return {"message": "'Cache group 'redis-cached-endpoint' was invalidated!'"}
-

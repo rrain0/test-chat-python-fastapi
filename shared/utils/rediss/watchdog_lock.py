@@ -12,8 +12,8 @@ class RedisLockLostError(Exception):
 
 @contextlib.asynccontextmanager
 async def redis_watchdog_lock(
-    redis: AsyncRedisDep,
     key: str,
+    redis: AsyncRedisDep,
     acquire_timeout: float = 11.0,
     renew_interval: float = 1.0,
     timeout: float = 3.0,

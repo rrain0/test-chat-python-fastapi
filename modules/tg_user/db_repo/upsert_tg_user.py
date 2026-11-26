@@ -1,12 +1,12 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 
 from modules.tg_user.db_tables.tg_user import PgTgUser
+from shared.utils.postgres.async_postgres import AsyncPostgres
 
 
 async def pg_upsert_tg_user_by_id(
         pg_tg_user: PgTgUser,
-        postgres: AsyncSession,
+        postgres: AsyncPostgres,
 ) -> None:
     statement = insert(PgTgUser).values(**pg_tg_user.model_dump())
 

@@ -1,21 +1,18 @@
 from fastapi import status, APIRouter
 
-from core.postgres.init import AsyncPostgresDep
-from modules.user.postgres.get_user_by_id import pg_get_user_by_id
-from modules.session.app.provider.provide_app_session import ProvideAppSessionDep
+from core.postgres.setup import AsyncPostgresDep
+from modules.session.app.provider.provide import ProvideAppSessionDep
 from shared.backend.modules.msg.api_model.msg_text import BackApiMsgText
-from shared.backend.modules.user.api_model.user import BackApiUser
-from shared.utils.fastapis.api_error_case import ApiErrorCase
 
 
-router_msg = APIRouter(prefix="/api/msg")
+router_msg_post = APIRouter(prefix="/api/msg")
 
 
 responses = { }
 
 
 
-@router_msg.post(
+@router_msg_post.post(
     path="",
     status_code=status.HTTP_200_OK,
     response_model=None,

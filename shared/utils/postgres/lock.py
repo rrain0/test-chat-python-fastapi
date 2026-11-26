@@ -1,11 +1,12 @@
 import hashlib
-from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy import text
+
+from shared.utils.postgres.async_postgres import AsyncPostgres
 
 
 async def postgres_lock(
-        postgres: AsyncSession,
         key: str,
+        postgres: AsyncPostgres,
 ):
     await postgres.exec(
         text("SELECT pg_advisory_xact_lock(:key)"),

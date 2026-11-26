@@ -4,19 +4,19 @@ from fastapi import status, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from shared.backend.modules.tg_user.api_model.tg_user_to_signup import BackApiTgUserToSignup
-from shared.backend.modules.user.api_model.user_logged_in import BackApiUserLoggedIn
+from shared.backend.modules.tg_user.api_model.to_signup import BackApiTgUserToSignup
+from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
 from services.jwt.lib.jwt_tg_user_service import create_tg_user_access_token
 from services.jwt.model.tg_user_for_access_token import TgUserForAccessToken
-from core.postgres.init import AsyncPostgresDep
-from shared.backend.modules.error.api_model.error import BackApiError
-from modules.user.convert.pg_user_to_back_api_user import pg_user_to_back_api_user
+from core.postgres.setup import AsyncPostgresDep
+from core.api_error.back_api_error import BackApiError
+from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
 from modules.tg_user.db_tables.tg_user import PgTgUser
-from modules.user.postgres.user import PgUser
+from modules.user.postgres.tables.user import PgUser
 from modules.tg_user.db_repo.upsert_tg_user import pg_upsert_tg_user_by_id
-from modules.user.postgres.get_user_by_username import pg_get_user_by_username
+from modules.user.postgres.repo.get_by_username import pg_get_user_by_username
 from services.jwt.model.user_for_access_token import UserForAccessToken
-from modules.pwd_hash.pwd_hash import hash_pwd_athread
+from core.pwd_hash.pwd_hash import hash_pwd_athread
 from shared.utils.datetimes.now import now
 from pydantic import model_validator
 from shared.backend.modules.user.validators.user_to_signup_pwd import validate_user_to_signup_pwd
@@ -39,8 +39,7 @@ async def tg_user_signup_post(
         user_to_signup: BackApiTgUserToSignupWithValidation,
         postgres: AsyncPostgresDep,
 ):
-
-    # Проверяем, нет ли уже пользователя с таким логином
+    # Check whether user with this username already exists
     db_user = await pg_get_user_by_username(user_to_signup.username, postgres)
     if db_user:
         return JSONResponse(
@@ -53,7 +52,7 @@ async def tg_user_signup_post(
             )
         )
 
-    # Хэшируем пароль
+    # Hash password
     hashed_pwd = await hash_pwd_athread(user_to_signup.pwd)
 
     db_user = PgUser(

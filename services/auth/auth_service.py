@@ -1,13 +1,11 @@
 from fastapi import HTTPException, status
 
-from core.postgres.init import AsyncPostgresDep
 from services.auth.bearer_auth_scheme import BearerAuthSchemeDep
-from modules.user.postgres.user import PgUser
+from modules.user.postgres.tables.user import PgUser
 from modules.tg_user.db_repo.get_tg_user_by_id import get_tg_user_by_id
-from modules.user.postgres.get_user_by_id import pg_get_user_by_id
+from modules.user.postgres.repo.get_by_id import pg_get_user_by_id
 from services.jwt.lib.jwt_tg_user_service import decode_tg_user_access_token
-
-
+from shared.utils.postgres.async_postgres import AsyncPostgres
 
 
 def credentials_exception():
@@ -23,7 +21,7 @@ def credentials_exception():
 
 async def get_current_user_by_tg_user(
         credentials: BearerAuthSchemeDep,
-        postgres: AsyncPostgresDep
+        postgres: AsyncPostgres,
 ) -> PgUser:
     tg_user_token_str = credentials.credentials
 
