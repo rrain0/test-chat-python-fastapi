@@ -1,7 +1,7 @@
 from fastapi import status, APIRouter
 
 from core.postgres.setup import AsyncPostgresDep
-from modules.session.app.provider.provide import ProvideAppSessionDep
+from modules.auth.provider.provide_app_session import ProvideAppSessionDep
 from shared.backend.modules.msg.api_model.msg_text import BackApiMsgText
 
 

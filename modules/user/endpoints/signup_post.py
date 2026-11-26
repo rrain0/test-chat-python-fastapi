@@ -8,12 +8,12 @@ from redis_fastapi import AsyncRedisDep
 from core.api_error.utils import add_api_error_case_to_openapi_responses_example
 from modules.user.api_errors.username_exists import username_exists_error_case
 from modules.user.postgres.repo.exists_by_username import pg_user_exists_by_username
-from modules.session.web.actions.create import commit_create_web_session
+from modules.session_web.actions.create import commit_create_web_session
 from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
 from shared.backend.modules.user.api_model.to_signup import BackApiUserToSignup
 from core.postgres.setup import AsyncPostgresDep
 from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
-from modules.session.web.token_store.refresh_token import add_web_refresh_token
+from modules.session_web.token_store.refresh_token import add_web_refresh_token
 from modules.user.postgres.tables.user import PgUser
 from core.pwd_hash.pwd_hash import hash_pwd_athread
 from pydantic import field_validator

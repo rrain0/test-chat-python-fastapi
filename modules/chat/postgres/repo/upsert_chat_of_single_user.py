@@ -2,7 +2,7 @@ from uuid import UUID, uuid7
 
 from sqlmodel import select
 
-from modules.chat.postgres.get_lock_key_create_user_chat import pg_get_lock_key_create_user_chat
+from modules.chat.postgres.key.create_user_chat import pg_get_create_user_chat_key
 from modules.chat.postgres.tables.chat import PgChat
 from modules.chat.postgres.tables.chat_to_user import PgChatToUser
 from modules.chat.postgres.views.chat_with_user_ids import PgChatWithUserIdsView
@@ -29,7 +29,7 @@ async def pg_upsert_chat_of_single_user(
 
     # 2. Acquire a transaction-level lock specific to this user_id & chat create action
     await postgres_lock(
-        pg_get_lock_key_create_user_chat(user_id),
+        pg_get_create_user_chat_key(user_id),
         postgres,
     )
 

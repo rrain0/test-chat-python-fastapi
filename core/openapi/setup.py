@@ -4,7 +4,7 @@ from fastapi.routing import iter_route_contexts
 
 from core.api_error.utils import add_api_error_case_to_openapi_responses_example
 from core.api_errors.request_validation import create_request_validation_api_error_case
-from modules.session.app.provider.provide import provide_app_session
+from modules.auth.provider.provide_app_session import provide_app_session
 from shared.backend.modules.auth.api_errors.unauthorized import unauthorized_error_case
 
 

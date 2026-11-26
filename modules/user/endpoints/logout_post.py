@@ -2,9 +2,9 @@ from fastapi import status, APIRouter, Response
 from redis_fastapi import AsyncRedisDep
 
 from core.postgres.setup import AsyncPostgresDep
-from modules.session.web.token_store.refresh_token import delete_web_refresh_token
-from modules.session.web.actions.remove import commit_remove_web_session
-from modules.session.app.provider.provide import ProvideAppSessionDep
+from modules.session_web.token_store.refresh_token import delete_web_refresh_token
+from modules.session_web.actions.remove import commit_remove_web_session
+from modules.auth.provider.provide_app_session import ProvideAppSessionDep
 
 
 router_user_logout_post = APIRouter(prefix="/api/user/logout")

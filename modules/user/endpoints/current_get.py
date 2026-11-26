@@ -2,7 +2,7 @@ from fastapi import status, APIRouter
 
 from core.postgres.setup import AsyncPostgresDep
 from modules.user.postgres.repo.get_by_id import pg_get_user_by_id
-from modules.session.app.provider.provide import ProvideAppSessionDep
+from modules.auth.provider.provide_app_session import ProvideAppSessionDep
 from modules.user.postgres.tables.user import PgUser
 from shared.backend.modules.user.api_model.user import BackApiUser
 

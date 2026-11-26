@@ -1,12 +1,11 @@
 from fastapi import FastAPI, Depends
 from redis_fastapi import cache, AsyncRedisDep, cache_evict
 
-from modules.auth.web.setup import setup_auth_web
 from core.exception_handlers.api_error_case import setup_api_error_case_exception_handler
 from core.exception_handlers.request_validation import setup_request_validation_error_handler
 from core.openapi.setup import setup_openapi
-from modules.session.tg_bot.setup import setup_tg_bot_session
-from modules.session.web.setup import setup_web_session
+from modules.session_tg_bot.setup import setup_tg_bot_session
+from modules.session_web.setup import setup_web_session
 from core.redis.setup import setup_redis
 from core.postgres.setup import setup_postgres
 from modules.chat.setup import setup_chat
@@ -25,7 +24,6 @@ setup_postgres(app)
 setup_request_validation_error_handler(app)
 setup_api_error_case_exception_handler(app)
 
-setup_auth_web(app)
 setup_web_session(app)
 setup_user(app)
 setup_tg_bot_session(app)

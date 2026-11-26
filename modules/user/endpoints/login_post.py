@@ -2,8 +2,8 @@ from fastapi import status, APIRouter
 from fastapi import Request, Response
 
 from core.api_error.utils import add_api_error_case_to_openapi_responses_example
-from modules.session.tg_bot.token_store.access_token import get_tg_bot_access_token
-from modules.session.web.actions.create import commit_create_web_session
+from modules.session_tg_bot.token_store.access_token import get_tg_bot_access_token
+from modules.session_web.actions.create import commit_create_web_session
 from modules.user.api_errors.invalid_authorization_type import invalid_authorization_type_error_case
 from modules.user.api_errors.invalid_credentials import invalid_credentials_error_case
 from modules.user.postgres.tables.user import PgUser
@@ -11,7 +11,7 @@ from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
 from shared.backend.modules.user.api_model.to_login import BackApiUserToLogin
 from core.postgres.setup import AsyncPostgresDep
 from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
-from modules.session.web.token_store.refresh_token import add_web_refresh_token
+from modules.session_web.token_store.refresh_token import add_web_refresh_token
 from modules.user.postgres.repo.get_by_username import pg_get_user_by_username
 from core.pwd_hash.pwd_hash import verify_pwd_athread
 from shared.utils.fastapis.get_client_ip import get_client_ip
