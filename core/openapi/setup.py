@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.routing import iter_route_contexts
 
-from core.api_error.utils import add_api_error_case_to_openapi_responses_example
+from core.api_error.utils import api_error_case_add_to_openapi_responses_examples
 from core.api_errors.request_validation import create_request_validation_api_error_case
-from modules.auth.provider.provide_app_session import provide_app_session
-from shared.backend.modules.auth.api_errors.unauthorized import unauthorized_error_case
+from modules.auth.provider.provide_user_session import provide_user_session
+from shared.backend.modules.auth.api_errors.unauthorized_user import unauthorized_user_error_case
 
 
 def global_openapi_setup(app: FastAPI):
@@ -63,7 +63,7 @@ def global_openapi_setup(app: FastAPI):
                 dependencies.extend([d.dependency for d in route.dependencies if d.dependency])
 
             # Проверяем, привязана ли функция авторизации provide_app_session к эндпоинту
-            if provide_app_session in dependencies or provide_app_session == route.dependant.call:
+            if provide_user_session in dependencies or provide_user_session == route.dependant.call:
 
                 # Инициализируем словарь ответов для методов (GET, POST и т.д.), если его нет
                 for method in route.methods:
@@ -79,8 +79,8 @@ def global_openapi_setup(app: FastAPI):
 
                             # Если 401 статус еще не задокументирован для этого роута вручную, добавляем его
                             if "401" not in responses:
-                                add_api_error_case_to_openapi_responses_example(
-                                    unauthorized_error_case,
+                                api_error_case_add_to_openapi_responses_examples(
+                                    unauthorized_user_error_case,
                                     responses
                                 )
 

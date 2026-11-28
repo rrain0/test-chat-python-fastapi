@@ -1,13 +1,13 @@
 from fastapi import status, APIRouter, Request, Response
 from redis_fastapi import AsyncRedisDep
 
-from core.api_error.utils import add_api_error_case_to_openapi_responses_example
+from core.api_error.utils import api_error_cases_add_to_openapi_responses_examples
 from core.postgres.setup import AsyncPostgresDep
-from modules.auth.api_errors.unauthorized_utils import unauthorized_exception
+from modules.auth.api_errors.unauthorized_user_utils import unauthorized_user_exception
 from modules.session_web.actions.refresh import commit_refresh_web_session
 from modules.session_web.token_store.refresh_token import get_web_refresh_token, add_web_refresh_token
-from shared.backend.modules.auth.api_errors.unauthorized import unauthorized_error_case
-from shared.backend.modules.user.api_model.auth_web_refreshed import BackApiAuthWebRefreshed
+from shared.backend.modules.auth.api_errors.unauthorized_user import unauthorized_user_error_case
+from shared.backend.modules.session_web.api_model.auth_web_refreshed import BackApiAuthWebRefreshed
 from shared.utils.fastapis.get_client_ip import get_client_ip
 from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agent_str
 
@@ -15,16 +15,13 @@ from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agen
 router_auth_web_refresh = APIRouter(prefix="/api/auth/web/refresh")
 
 
-
-responses = { }
-add_api_error_case_to_openapi_responses_example(unauthorized_error_case, responses)
-
-
 @router_auth_web_refresh.post(
     path="",
     status_code=status.HTTP_200_OK,
     response_model=BackApiAuthWebRefreshed,
-    responses=responses,
+    responses=api_error_cases_add_to_openapi_responses_examples(
+        unauthorized_user_error_case,
+    ),
 )
 async def auth_web_refresh_post(
         request: Request,
@@ -34,7 +31,7 @@ async def auth_web_refresh_post(
 ):
     refresh_token_str = get_web_refresh_token(request)
     if not refresh_token_str:
-        raise unauthorized_exception()
+        raise unauthorized_user_exception()
 
     (
         new_access_token_str,

@@ -1,5 +1,5 @@
-from core.api_error.back_api_error import BackApiError
-from shared.backend.core.api_error.case import ApiErrorCase
+from shared.backend.core.api_error.api_model.error import BackApiError
+from shared.backend.core.api_error.api_error_case import ApiErrorCase
 from core.api_error.exception import ApiErrorCaseException
 from fastapi.responses import JSONResponse
 
@@ -25,7 +25,10 @@ def api_error_case_to_json_response(api_error_case: ApiErrorCase):
     )
 
 
-def add_api_error_case_to_openapi_responses_example(api_error_case: ApiErrorCase, responses: dict):
+def api_error_case_add_to_openapi_responses_examples(
+        api_error_case: ApiErrorCase,
+        responses: dict,
+):
     (
         responses
             .setdefault(str(api_error_case.status_code), {})
@@ -37,3 +40,11 @@ def add_api_error_case_to_openapi_responses_example(api_error_case: ApiErrorCase
                 "value": api_error_case_to_back_api_error(api_error_case).model_dump(),
             })
     )
+
+
+def api_error_cases_add_to_openapi_responses_examples(
+        *api_error_cases: ApiErrorCase,
+        responses: dict = {},
+):
+    for case in api_error_cases:
+        api_error_case_add_to_openapi_responses_examples(case, responses)

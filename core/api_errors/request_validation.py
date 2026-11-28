@@ -1,8 +1,8 @@
 from typing import Any
 
-from starlette import status
+from fastapi import status
 
-from shared.backend.core.api_error.case import ApiErrorCase
+from shared.backend.core.api_error.api_error_case import ApiErrorCase
 
 
 def create_request_validation_api_error_case(error_detail: Any = None):

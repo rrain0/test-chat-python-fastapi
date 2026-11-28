@@ -8,7 +8,7 @@ from shared.utils.postgres.async_postgres import AsyncPostgres
 from shared.utils.rediss.async_redis import AsyncRedis
 
 
-async def create_tg_bot_session(
+async def commit_create_tg_bot_session(
         user_id: UUID,
         tg_user_id: int,
         postgres: AsyncPostgres,
@@ -33,3 +33,5 @@ async def create_tg_bot_session(
         ),
         postgres=postgres,
     )
+
+    await postgres.commit()

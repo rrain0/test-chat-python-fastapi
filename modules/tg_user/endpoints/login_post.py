@@ -3,10 +3,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from shared.backend.modules.tg_user.api_model.to_login import BackApiTgUserToLogin
-from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
+from shared.backend.modules.auth_web.api_model.logged_in import BackApiWebUserLoggedIn
 from core.postgres.setup import AsyncPostgresDep
-from core.api_error.back_api_error import BackApiError
-from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
+from shared.backend.core.api_error.api_model.error import BackApiError
+from modules.user.mappers.pg_to_back_api_user import pg_to_back_api_user
 from modules.tg_user.db_tables.tg_user import PgTgUser
 from modules.tg_user.db_repo.upsert_tg_user import pg_upsert_tg_user_by_id
 from modules.user.postgres.repo.get_by_username import pg_get_user_by_username
@@ -19,7 +19,7 @@ from shared.utils.datetimes.now import now
 router_tg_user_login = APIRouter(prefix="/api/tg_user/login")
 
 
-@router_tg_user_login.post("", status_code=status.HTTP_200_OK, response_model=BackApiUserLoggedIn)
+@router_tg_user_login.post("", status_code=status.HTTP_200_OK, response_model=BackApiWebUserLoggedIn)
 async def tg_user_login_post(
         user_to_login: BackApiTgUserToLogin,
         postgres: AsyncPostgresDep,
@@ -60,9 +60,9 @@ async def tg_user_login_post(
         created_at=now()
     )
 
-    return BackApiUserLoggedIn(
+    return BackApiWebUserLoggedIn(
         access_token=tg_user_access_token,
-        user=pg_user_to_back_api_user(db_user)
+        user=pg_to_back_api_user(db_user)
     )
 
 

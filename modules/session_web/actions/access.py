@@ -1,4 +1,4 @@
-from modules.auth.api_errors.unauthorized_utils import unauthorized_exception
+from modules.auth.api_errors.unauthorized_user_utils import unauthorized_user_exception
 from modules.session_web.mappers.pg_to_rd_web_session import pg_to_rd_web_session
 from modules.session_web.jwt_access.decode import decode_web_access_token
 from modules.session_web.postgres.repo.get_by_id_by_user_id import pg_get_web_session_by_id_by_user_id
@@ -22,7 +22,7 @@ async def commit_access_web_session(
 ):
     try: access_token = decode_web_access_token(access_token_str)
     except Exception as ex:
-        raise unauthorized_exception() from ex
+        raise unauthorized_user_exception() from ex
 
     async with redis_watchdog_lock(
         rd_get_user_web_session_key(access_token.user_id, access_token.session_id),
@@ -55,7 +55,7 @@ async def commit_access_web_session(
 
         # Check if session exists
         if not rd_web_session:
-            raise unauthorized_exception()
+            raise unauthorized_user_exception()
 
         last_active_at = now()
 
@@ -71,7 +71,7 @@ async def commit_access_web_session(
                 redis=redis,
             )
             await postgres.commit()
-            raise unauthorized_exception()
+            raise unauthorized_user_exception()
 
         access_rt_id = access_token.refresh_token_id
         curr_rt_id = rd_web_session.refresh_token_id
@@ -88,11 +88,11 @@ async def commit_access_web_session(
                 redis=redis,
             )
             await postgres.commit()
-            raise unauthorized_exception()
+            raise unauthorized_user_exception()
 
         # Check token expiration
         if access_token.expires_at < last_active_at:
-            raise unauthorized_exception()
+            raise unauthorized_user_exception()
 
 
 
@@ -142,4 +142,4 @@ async def commit_access_web_session(
 
 
     # Runtime unreachable
-    raise unauthorized_exception()
+    raise unauthorized_user_exception()

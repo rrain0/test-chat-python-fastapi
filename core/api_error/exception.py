@@ -1,4 +1,4 @@
-from shared.backend.core.api_error.case import ApiErrorCase
+from shared.backend.core.api_error.api_error_case import ApiErrorCase
 
 
 class ApiErrorCaseException(Exception):

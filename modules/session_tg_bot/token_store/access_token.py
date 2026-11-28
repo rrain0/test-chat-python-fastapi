@@ -3,7 +3,6 @@ from fastapi import Request
 
 def get_tg_bot_access_token(request: Request):
     auth_header = request.headers.get("Authorization")
-
     if not auth_header:
         return None
     if not auth_header.startswith("Bearer "):

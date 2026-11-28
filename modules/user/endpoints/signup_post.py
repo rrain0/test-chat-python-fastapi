@@ -5,14 +5,14 @@ from fastapi import Request, Response
 from pydantic_core import PydanticCustomError
 from redis_fastapi import AsyncRedisDep
 
-from core.api_error.utils import add_api_error_case_to_openapi_responses_example
-from modules.user.api_errors.username_exists import username_exists_error_case
+from core.api_error.utils import api_error_cases_add_to_openapi_responses_examples, api_error_case_to_exception
+from shared.backend.modules.user.api_errors.username_exists import username_exists_error_case
 from modules.user.postgres.repo.exists_by_username import pg_user_exists_by_username
 from modules.session_web.actions.create import commit_create_web_session
-from shared.backend.modules.user.api_model.logged_in import BackApiUserLoggedIn
+from shared.backend.modules.auth_web.api_model.logged_in import BackApiWebUserLoggedIn
 from shared.backend.modules.user.api_model.to_signup import BackApiUserToSignup
 from core.postgres.setup import AsyncPostgresDep
-from modules.user.mappers.pg_to_back_api_user import pg_user_to_back_api_user
+from modules.user.mappers.pg_to_back_api_user import pg_to_back_api_user
 from modules.session_web.token_store.refresh_token import add_web_refresh_token
 from modules.user.postgres.tables.user import PgUser
 from core.pwd_hash.pwd_hash import hash_pwd_athread
@@ -25,10 +25,6 @@ from shared.backend.modules.user.validators.user_to_signup_username import valid
 
 
 router_user_signup_post = APIRouter(prefix="/api/user/signup")
-
-
-responses = { }
-add_api_error_case_to_openapi_responses_example(username_exists_error_case, responses)
 
 
 class BackApiUserToSignupWithValidation(BackApiUserToSignup):
@@ -54,8 +50,10 @@ class BackApiUserToSignupWithValidation(BackApiUserToSignup):
 @router_user_signup_post.post(
     path="", 
     status_code=status.HTTP_201_CREATED, 
-    response_model=BackApiUserLoggedIn,
-    responses=responses,
+    response_model=BackApiWebUserLoggedIn,
+    responses=api_error_cases_add_to_openapi_responses_examples(
+        username_exists_error_case,
+    ),
 )
 async def user_signup_post(
         user_to_signup: BackApiUserToSignupWithValidation,
@@ -67,7 +65,7 @@ async def user_signup_post(
     # Check whether user with this username already exists
     pg_user_exists = await pg_user_exists_by_username(user_to_signup.username, postgres)
     if pg_user_exists:
-        raise username_exists_error_case.to_exception()
+        raise api_error_case_to_exception(username_exists_error_case)
 
     # Hash the password
     hashed_pwd = await hash_pwd_athread(user_to_signup.pwd)
@@ -101,7 +99,7 @@ async def user_signup_post(
 
     # Add refresh token to response as a cookie
     add_web_refresh_token(response, refresh_token_str, refresh_token.expires_at)
-    return BackApiUserLoggedIn(
+    return BackApiWebUserLoggedIn(
         access_token=access_token_str,
-        user=pg_user_to_back_api_user(pg_user)
+        user=pg_to_back_api_user(pg_user)
     )

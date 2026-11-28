@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class BackApiUserToLogin(BaseModel):
+class BackApiWebUserToLogin(BaseModel):
     login: str
     pwd: str

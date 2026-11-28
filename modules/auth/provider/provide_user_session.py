@@ -5,7 +5,7 @@ from fastapi import Request
 from redis_fastapi import AsyncRedisDep
 
 from core.postgres.setup import AsyncPostgresDep
-from modules.auth.api_errors.unauthorized_utils import unauthorized_exception
+from modules.auth.api_errors.unauthorized_user_utils import unauthorized_user_exception
 from modules.auth.model.app_session import AppSession
 from modules.session_tg_bot.jwt_access.decode import decode_tg_bot_access_token
 from modules.session_tg_bot.token_store.access_token import get_tg_bot_access_token
@@ -16,7 +16,7 @@ from shared.utils.fastapis.get_client_user_agent_str import get_client_user_agen
 
 
 
-async def provide_app_session(
+async def provide_user_session(
         request: Request,
         postgres: AsyncPostgresDep,
         redis: AsyncRedisDep,
@@ -60,10 +60,10 @@ async def provide_app_session(
             # return app_session
         except Exception as ex:
             traceback.print_exc()
-            raise unauthorized_exception() from ex
+            raise unauthorized_user_exception() from ex
 
-    raise unauthorized_exception()
+    raise unauthorized_user_exception()
 
 
 
-ProvideAppSessionDep = Annotated[AppSession, Depends(provide_app_session)]
+ProvideAppSessionDep = Annotated[AppSession, Depends(provide_user_session)]

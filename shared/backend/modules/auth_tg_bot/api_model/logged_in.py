@@ -1,0 +1,7 @@
+from pydantic import BaseModel
+
+from shared.backend.modules.user.api_model.user import BackApiUser
+
+
+class BackApiTgBotUserLoggedIn(BaseModel):
+    user: BackApiUser

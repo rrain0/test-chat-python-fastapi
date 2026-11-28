@@ -11,7 +11,7 @@ def decode_tg_bot_access_token(token_str: str) -> TgBotAccessToken:
         algorithms=["HS256"],
         options={
             "verify_signature": True,    # Ensure the signature is valid
-            "verify_exp": False,         # Turn off the expiration check
+            "verify_exp": True,          # Turn on / enforce the expiration check
             "require": ["exp"],          # Raise an error if the token has no "exp" claim at all
         }
     )
